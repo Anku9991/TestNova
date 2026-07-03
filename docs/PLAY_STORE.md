@@ -1,4 +1,4 @@
-# Play Store Deployment — ExamNexa Android App
+# Play Store Deployment — TestNova Android App
 
 ## Using Capacitor to Build Android App
 
@@ -15,7 +15,7 @@
 
 ```bash
 npm install @capacitor/core @capacitor/cli @capacitor/android
-npx cap init ExamNexa com.examnexa.app --web-dir=out
+npx cap init TestNova com.TestNova.app --web-dir=out
 ```
 
 ---
@@ -26,12 +26,12 @@ npx cap init ExamNexa com.examnexa.app --web-dir=out
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.examnexa.app',
-  appName: 'ExamNexa',
+  appId: 'com.TestNova.app',
+  appName: 'TestNova',
   webDir: 'out',
   server: {
     androidScheme: 'https',
-    url: 'https://examnexa.com',   // Use live URL for production
+    url: 'https://TestNova.com',   // Use live URL for production
     cleartext: false,
   },
   plugins: {
@@ -88,7 +88,7 @@ npx cap open android
 ## Step 6: App Icons
 
 1. In Android Studio, right-click `res/` → New → Image Asset
-2. Use ExamNexa logo as the source image
+2. Use TestNova logo as the source image
 3. Generate all required sizes automatically
 
 Or use a tool like [Makeappicon.com](https://makeappicon.com) to generate all sizes.
@@ -107,8 +107,8 @@ Or use a tool like [Makeappicon.com](https://makeappicon.com) to generate all si
 ### Generate Keystore
 
 ```bash
-keytool -genkey -v -keystore examnexa-release.jks \
-  -alias examnexa -keyalg RSA -keysize 2048 -validity 10000
+keytool -genkey -v -keystore TestNova-release.jks \
+  -alias TestNova -keyalg RSA -keysize 2048 -validity 10000
 ```
 
 ### Configure Signing in `android/app/build.gradle`
@@ -117,9 +117,9 @@ keytool -genkey -v -keystore examnexa-release.jks \
 android {
   signingConfigs {
     release {
-      storeFile file('examnexa-release.jks')
+      storeFile file('TestNova-release.jks')
       storePassword 'YOUR_STORE_PASSWORD'
-      keyAlias 'examnexa'
+      keyAlias 'TestNova'
       keyPassword 'YOUR_KEY_PASSWORD'
     }
   }
@@ -148,7 +148,7 @@ Output: `android/app/build/outputs/bundle/release/app-release.aab`
 ## Step 9: Play Store Upload
 
 1. Go to [Google Play Console](https://play.google.com/console)
-2. Create new app: **ExamNexa**
+2. Create new app: **TestNova**
 3. App category: **Education**
 4. Content rating: **Everyone**
 5. Upload `app-release.aab`
@@ -167,7 +167,7 @@ Output: `android/app/build/outputs/bundle/release/app-release.aab`
 - Feature graphic: 1024x500
 
 ### Store Listing
-- **Title**: ExamNexa — Govt Exam Prep
+- **Title**: TestNova — Govt Exam Prep
 - **Short description**: SSC, Railway, Banking, UPSC & 200+ exam CBT practice
 - **Full description**: See marketing copy in `docs/`
 

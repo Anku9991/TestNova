@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Sign In | ExamNexa",
-  description: "Sign in to your ExamNexa account and continue your government exam preparation.",
+  title: "Sign In | TestNova",
+  description: "Sign in to your TestNova account and continue your government exam preparation.",
 };
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {

@@ -6,20 +6,20 @@ import { ChevronDown } from "lucide-react";
 
 const faqs = [
   {
-    q: "Is ExamNexa really free to use?",
-    a: "Yes! ExamNexa has a completely free tier with access to 100+ practice tests, basic analytics, and 5 full mock tests. No credit card required. You can upgrade to Pro or Annual plans for full access to all features.",
+    q: "Is TestNova really free to use?",
+    a: "Yes! TestNova has a completely free tier with access to 100+ practice tests, basic analytics, and 5 full mock tests. No credit card required. You can upgrade to Pro or Annual plans for full access to all features.",
   },
   {
-    q: "How is ExamNexa different from other platforms?",
-    a: "ExamNexa uses the actual CBT interface technology used in government exams (SSC, Railway, Banking, etc.). Our AI-powered analytics identify your weak topics and create personalized study plans. We cover 200+ exams under one subscription with real exam-day simulation.",
+    q: "How is TestNova different from other platforms?",
+    a: "TestNova uses the actual CBT interface technology used in government exams (SSC, Railway, Banking, etc.). Our AI-powered analytics identify your weak topics and create personalized study plans. We cover 200+ exams under one subscription with real exam-day simulation.",
   },
   {
     q: "Is there negative marking in mock tests?",
     a: "Yes! All our mock tests accurately replicate the negative marking scheme of the actual exam — 0.25, 0.33, or 0.50 marks deducted per wrong answer depending on the exam. You can also practice with negative marking disabled to build confidence.",
   },
   {
-    q: "Can I access ExamNexa on my mobile phone?",
-    a: "Absolutely! ExamNexa is a Progressive Web App (PWA) — install it on your phone like a native app. We also have a dedicated Android app available on the Play Store. The mobile experience is fully optimized for exam practice.",
+    q: "Can I access TestNova on my mobile phone?",
+    a: "Absolutely! TestNova is a Progressive Web App (PWA) — install it on your phone like a native app. We also have a dedicated Android app available on the Play Store. The mobile experience is fully optimized for exam practice.",
   },
   {
     q: "How accurate are the mock tests compared to real exams?",
@@ -27,11 +27,11 @@ const faqs = [
   },
   {
     q: "What is the refund policy?",
-    a: "We offer a 7-day money-back guarantee on all paid plans. If you're not satisfied with ExamNexa within 7 days of purchase, contact our support team and you'll receive a full refund — no questions asked.",
+    a: "We offer a 7-day money-back guarantee on all paid plans. If you're not satisfied with TestNova within 7 days of purchase, contact our support team and you'll receive a full refund — no questions asked.",
   },
   {
-    q: "Can I use ExamNexa for multiple exams?",
-    a: "Yes! One subscription covers all exam categories on ExamNexa. If you're preparing for SSC CGL and also keeping IBPS PO as a backup, you can practice both with the same account.",
+    q: "Can I use TestNova for multiple exams?",
+    a: "Yes! One subscription covers all exam categories on TestNova. If you're preparing for SSC CGL and also keeping IBPS PO as a backup, you can practice both with the same account.",
   },
   {
     q: "How do I get my certificate?",
@@ -56,7 +56,7 @@ export function FaqSection() {
             Frequently Asked <span className="gradient-text">Questions</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Everything you need to know about ExamNexa
+            Everything you need to know about TestNova
           </p>
         </motion.div>
 

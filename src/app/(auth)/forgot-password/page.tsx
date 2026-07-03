@@ -38,7 +38,7 @@ export default function ForgotPasswordPage() {
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-600 to-primary-900 flex items-center justify-center">
             <Zap className="w-5 h-5 text-secondary-400" />
           </div>
-          <span className="font-display font-bold text-xl text-white">ExamNexa</span>
+          <span className="font-display font-bold text-xl text-white">TestNova</span>
         </Link>
         <h1 className="font-display text-2xl font-bold text-white mb-1">Forgot Password?</h1>
         <p className="text-white/50 text-sm">Enter your email and we&apos;ll send you a reset link</p>

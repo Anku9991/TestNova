@@ -29,7 +29,7 @@ export function CtaSection() {
           </h2>
 
           <p className="text-white/60 text-lg md:text-xl max-w-2xl mx-auto mb-10">
-            Join 10 lakh+ aspirants who are preparing smarter with ExamNexa.
+            Join 10 lakh+ aspirants who are preparing smarter with TestNova.
             Start free, upgrade when ready.
           </p>
 

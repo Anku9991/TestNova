@@ -5,10 +5,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  LayoutDashboard, BookOpen, BarChart3, Trophy, Bell,
-  User, Settings, LogOut, Menu, X, Zap, CreditCard,
-  Download, Award, Bookmark, ChevronLeft, ChevronRight,
-  Shield, Users, HelpCircle,
+  LayoutDashboard, BookOpen, BarChart3, Trophy,
+  User, Settings, Zap, CreditCard, LogOut, Menu, X,
+  ChevronLeft, ChevronRight, Bookmark, Shield, Users, HelpCircle, BrainCircuit, MessageSquare
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { logout } from "@/lib/firebase/auth";
@@ -19,13 +18,12 @@ import { getInitials } from "@/lib/utils";
 const studentNav = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/student/dashboard" },
   { icon: BookOpen, label: "My Tests", href: "/student/tests" },
-  { icon: BarChart3, label: "Performance", href: "/student/performance" },
   { icon: Trophy, label: "Results", href: "/student/results" },
+  { icon: BrainCircuit, label: "AI Planner", href: "/student/ai-planner" },
+  { icon: BarChart3, label: "Performance", href: "/student/performance" },
   { icon: Bookmark, label: "Bookmarks", href: "/student/bookmarks" },
-  { icon: Award, label: "Certificates", href: "/student/certificates" },
   { icon: CreditCard, label: "Subscription", href: "/student/subscription" },
-  { icon: Download, label: "Downloads", href: "/student/downloads" },
-  { icon: Bell, label: "Notifications", href: "/student/notifications" },
+  { icon: MessageSquare, label: "Support", href: "/student/support" },
   { icon: User, label: "Profile", href: "/student/profile" },
 ];
 
@@ -34,6 +32,7 @@ const adminNav = [
   { icon: Users, label: "Users", href: "/admin/users" },
   { icon: BookOpen, label: "Exams", href: "/admin/exams" },
   { icon: HelpCircle, label: "Questions", href: "/admin/questions" },
+  { icon: MessageSquare, label: "Support", href: "/admin/support" },
   { icon: BarChart3, label: "Reports", href: "/admin/reports" },
   { icon: Settings, label: "Settings", href: "/admin/settings" },
 ];
@@ -156,7 +155,7 @@ export function DashboardSidebar() {
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary-600 to-primary-900 flex items-center justify-center">
             <Zap className="w-4 h-4 text-secondary-400" />
           </div>
-          <span className="font-display font-bold text-base">ExamNexa</span>
+          <span className="font-display font-bold text-base">TestNova</span>
         </Link>
         <button onClick={() => setMobileOpen(true)} className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-muted">
           <Menu className="w-5 h-5" />

@@ -66,7 +66,7 @@ export default function SuperAdminDashboard() {
           <ShieldCheck className="w-6 h-6 text-primary-500" />
           <h1 className="font-display text-2xl md:text-3xl font-bold">Super Admin Dashboard</h1>
         </div>
-        <p className="text-muted-foreground">Platform overview — ExamNexa Production</p>
+        <p className="text-muted-foreground">Platform overview — TestNova Production</p>
       </motion.div>
 
       {/* KPI Cards */}

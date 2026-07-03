@@ -106,7 +106,7 @@ export function Footer() {
         <div className="flex flex-wrap gap-6 pb-8 border-b border-border text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Mail className="w-4 h-4 text-primary-500" />
-            support@examnexa.com
+            support@TestNova.com
           </div>
           <div className="flex items-center gap-2">
             <Phone className="w-4 h-4 text-primary-500" />
@@ -120,7 +120,7 @@ export function Footer() {
 
         {/* Bottom row */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} ExamNexa. All rights reserved. Built with ❤️ in India.</p>
+          <p>© {new Date().getFullYear()} TestNova. All rights reserved. Built with ❤️ in India.</p>
           <p>
             Made for aspirants who dare to dream of serving the nation.
           </p>

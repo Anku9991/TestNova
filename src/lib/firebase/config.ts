@@ -15,10 +15,10 @@ const firebaseConfig = {
 
 // Only initialize Firebase when a valid API key is present
 // (prevents crashes during Next.js static pre-rendering at build time)
-let app: FirebaseApp | null = null;
-let auth: Auth | null = null;
-let db: Firestore | null = null;
-let storage: FirebaseStorage | null = null;
+let app = null as unknown as FirebaseApp;
+let auth = null as unknown as Auth;
+let db = null as unknown as Firestore;
+let storage = null as unknown as FirebaseStorage;
 
 if (firebaseConfig.apiKey) {
   app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();

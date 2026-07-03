@@ -5,7 +5,6 @@ import { ExamCategories } from "@/components/landing/exam-categories";
 import { FeaturesSection } from "@/components/landing/features-section";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { PricingSection } from "@/components/landing/pricing-section";
-import { TestimonialsSection } from "@/components/landing/testimonials-section";
 import { FaqSection } from "@/components/landing/faq-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { Footer } from "@/components/landing/footer";
@@ -20,7 +19,6 @@ export default function HomePage() {
       <FeaturesSection />
       <HowItWorks />
       <PricingSection />
-      <TestimonialsSection />
       <FaqSection />
       <CtaSection />
       <Footer />

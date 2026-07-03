@@ -18,11 +18,11 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL || "https://examnexa.com"
+    process.env.NEXT_PUBLIC_APP_URL || "https://TestNova.com"
   ),
   title: {
-    default: "ExamNexa — Premium Government Exam Preparation Platform",
-    template: "%s | ExamNexa",
+    default: "TestNova — Premium Government Exam Preparation Platform",
+    template: "%s | TestNova",
   },
   description:
     "India's most advanced CBT platform for SSC, Railway, Banking, UPSC, State PSC, Defence and all government competitive exams. Practice with 10,000+ questions, real exam interface, and AI-powered analytics.",
@@ -38,30 +38,30 @@ export const metadata: Metadata = {
     "online test",
     "mock test",
     "competitive exam",
-    "ExamNexa",
+    "TestNova",
   ],
-  authors: [{ name: "ExamNexa" }],
-  creator: "ExamNexa",
+  authors: [{ name: "TestNova" }],
+  creator: "TestNova",
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://examnexa.com",
-    title: "ExamNexa — Premium Government Exam Preparation Platform",
+    url: "https://TestNova.com",
+    title: "TestNova — Premium Government Exam Preparation Platform",
     description:
       "India's most advanced CBT platform for all government competitive exams.",
-    siteName: "ExamNexa",
+    siteName: "TestNova",
     images: [
       {
         url: "/og/og-image.png",
         width: 1200,
         height: 630,
-        alt: "ExamNexa",
+        alt: "TestNova",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ExamNexa — Premium Government Exam Preparation Platform",
+    title: "TestNova — Premium Government Exam Preparation Platform",
     description:
       "India's most advanced CBT platform for all government competitive exams.",
     images: ["/og/og-image.png"],
@@ -99,7 +99,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="ExamNexa" />
+        <meta name="apple-mobile-web-app-title" content="TestNova" />
       </head>
       <body
         className={`${inter.variable} ${outfit.variable} font-sans antialiased min-h-screen bg-background text-foreground`}

@@ -67,7 +67,7 @@ const features = [
     icon: Smartphone,
     title: "PWA + Mobile App",
     description:
-      "Install ExamNexa as a PWA or download the Android app. Study offline, get push notifications, and sync seamlessly.",
+      "Install TestNova as a PWA or download the Android app. Study offline, get push notifications, and sync seamlessly.",
     color: "text-cyan-500",
     bg: "bg-cyan-500/10",
   },
@@ -115,7 +115,7 @@ export function FeaturesSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="badge-primary mb-4 inline-block">Why ExamNexa?</span>
+          <span className="badge-primary mb-4 inline-block">Why TestNova?</span>
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-4">
             Everything You Need to <span className="gradient-text">Succeed</span>
           </h2>

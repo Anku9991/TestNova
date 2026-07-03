@@ -1,4 +1,4 @@
-# Vercel Deployment Guide — ExamNexa
+# Vercel Deployment Guide — TestNova
 
 ## Prerequisites
 
@@ -62,7 +62,7 @@ RAZORPAY_KEY_SECRET
 
 ### App Config
 ```
-NEXT_PUBLIC_APP_NAME=ExamNexa
+NEXT_PUBLIC_APP_NAME=TestNova
 NEXT_PUBLIC_APP_URL=https://your-vercel-url.vercel.app
 ```
 
@@ -79,7 +79,7 @@ NEXT_PUBLIC_APP_URL=https://your-vercel-url.vercel.app
 ## Step 5: Custom Domain Setup
 
 1. Go to Project Settings → Domains
-2. Add your custom domain: `examnexa.com`
+2. Add your custom domain: `TestNova.com`
 3. Vercel provides SSL automatically
 4. Update DNS records at your domain registrar:
    - Type: `CNAME`, Name: `www`, Value: `cname.vercel-dns.com`
@@ -108,7 +108,7 @@ For preview deployments, push to any other branch.
 After adding your custom domain, add it to Firebase Auth:
 
 1. Firebase Console → Authentication → Settings → Authorized domains
-2. Add: `examnexa.com` and `www.examnexa.com`
+2. Add: `TestNova.com` and `www.TestNova.com`
 
 ---
 
@@ -141,7 +141,7 @@ git branch -M main
 
 # First push
 git add .
-git commit -m "feat: initial ExamNexa production build"
+git commit -m "feat: initial TestNova production build"
 git push -u origin main
 
 # Regular updates

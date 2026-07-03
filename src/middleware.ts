@@ -8,7 +8,7 @@ const authRoutes = ["/login", "/register", "/forgot-password"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const sessionCookie = request.cookies.get("examnexa_session");
+  const sessionCookie = request.cookies.get("TestNova_session");
   const isAuthenticated = !!sessionCookie?.value;
 
   // Redirect authenticated users away from auth pages

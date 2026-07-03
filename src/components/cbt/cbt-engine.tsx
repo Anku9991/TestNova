@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import {
   Clock, Flag, ChevronLeft, ChevronRight, Maximize2, Minimize2,
   AlertTriangle, CheckCircle, LayoutGrid, X, Send,
@@ -48,7 +49,6 @@ interface CBTEngineProps {
   totalDurationMinutes?: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function CBTEngine({ examId: _examId, totalDurationMinutes = 60 }: CBTEngineProps) {
   const [questions] = useState<Question[]>(sampleQuestions);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -182,9 +182,9 @@ export function CBTEngine({ examId: _examId, totalDurationMinutes = 60 }: CBTEng
               <div className="text-xs text-muted-foreground">Not Answered</div>
             </div>
           </div>
-          <a href="/student/results" className="btn-primary w-full justify-center">
+          <Link href={`/student/results/mock-attempt-${Date.now()}`} className="btn-primary w-full justify-center">
             View Results
-          </a>
+          </Link>
         </motion.div>
       </div>
     );

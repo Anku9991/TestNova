@@ -46,7 +46,7 @@ export default function RegisterPage() {
   const onSubmit = async (data: FormData) => {
     try {
       await registerWithEmail(data.email, data.password, data.name, "student");
-      toast.success("Account created! Welcome to ExamNexa 🎉");
+      toast.success("Account created! Welcome to TestNova 🎉");
       router.push("/student/dashboard");
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "";
@@ -62,7 +62,7 @@ export default function RegisterPage() {
     setGoogleLoading(true);
     try {
       await loginWithGoogle();
-      toast.success("Welcome to ExamNexa! 🎉");
+      toast.success("Welcome to TestNova! 🎉");
       router.push("/student/dashboard");
     } catch {
       toast.error("Google signup failed. Please try again.");
@@ -200,7 +200,7 @@ export default function RegisterPage() {
             className="mt-0.5 w-4 h-4 rounded border-white/20 bg-white/5"
           />
           <label htmlFor="terms-checkbox" className="text-white/50 text-xs leading-relaxed">
-            I agree to ExamNexa&apos;s{" "}
+            I agree to TestNova&apos;s{" "}
             <Link href="/terms" className="text-primary-400 hover:underline">Terms of Service</Link>{" "}
             and{" "}
             <Link href="/privacy" className="text-primary-400 hover:underline">Privacy Policy</Link>

@@ -12,7 +12,7 @@ const testimonials = [
     location: "Bihar",
     avatar: "",
     rating: 5,
-    text: "ExamNexa is hands down the best platform for SSC preparation. The real CBT interface gave me complete confidence on exam day. The AI analysis helped me identify my weak areas in Quant and Grammar. Selected in first attempt!",
+    text: "TestNova is hands down the best platform for SSC preparation. The real CBT interface gave me complete confidence on exam day. The AI analysis helped me identify my weak areas in Quant and Grammar. Selected in first attempt!",
     exam: "SSC CGL 2024 — Tier 1 & 2 Cleared",
     score: "189/200",
   },
@@ -22,7 +22,7 @@ const testimonials = [
     location: "Rajasthan",
     avatar: "",
     rating: 5,
-    text: "After failing 3 times, I found ExamNexa. The detailed analytics showed me exactly where I was losing marks. The reasoning section coverage is exceptional. Finally selected as IBPS PO in 4th attempt!",
+    text: "After failing 3 times, I found TestNova. The detailed analytics showed me exactly where I was losing marks. The reasoning section coverage is exceptional. Finally selected as IBPS PO in 4th attempt!",
     exam: "IBPS PO 2024 — Final Selected",
     score: "91st Percentile",
   },
@@ -32,7 +32,7 @@ const testimonials = [
     location: "UP",
     avatar: "",
     rating: 5,
-    text: "Best value for money! The RRB NTPC mock tests are exactly like the real exam. I practiced 150+ tests here. The timer, question palette, and negative marking practice was spot on. Thank you ExamNexa!",
+    text: "Best value for money! The RRB NTPC mock tests are exactly like the real exam. I practiced 150+ tests here. The timer, question palette, and negative marking practice was spot on. Thank you TestNova!",
     exam: "RRB NTPC 2024 — Junior Clerk",
     score: "CBI Rank 1247",
   },
@@ -42,7 +42,7 @@ const testimonials = [
     location: "Gujarat",
     avatar: "",
     rating: 5,
-    text: "The UPSC Prelims practice on ExamNexa is brilliant. The previous year question analysis and topic-wise tests are very systematic. The AI study planner helped me complete the entire syllabus in 6 months.",
+    text: "The UPSC Prelims practice on TestNova is brilliant. The previous year question analysis and topic-wise tests are very systematic. The AI study planner helped me complete the entire syllabus in 6 months.",
     exam: "UPSC CSE Prelims 2024 — Cleared",
     score: "GS Paper: 124/200",
   },
@@ -52,7 +52,7 @@ const testimonials = [
     location: "Hyderabad",
     avatar: "",
     rating: 5,
-    text: "ExamNexa's NDA mock tests are incredibly accurate. The Maths section with LaTeX rendering for formulas is a game-changer. Cleared NDA in my very first attempt at 18! The leaderboard kept me motivated.",
+    text: "TestNova's NDA mock tests are incredibly accurate. The Maths section with LaTeX rendering for formulas is a game-changer. Cleared NDA in my very first attempt at 18! The leaderboard kept me motivated.",
     exam: "NDA 2024 — 143rd Course",
     score: "Maths: 168/300",
   },
@@ -62,7 +62,7 @@ const testimonials = [
     location: "Kerala",
     avatar: "",
     rating: 5,
-    text: "The insurance exam coverage on ExamNexa is unmatched. LIC AAO, NICL, NIACL — all fully covered. The PDF reports helped me track my progress week by week. Highly recommended for insurance aspirants!",
+    text: "The insurance exam coverage on TestNova is unmatched. LIC AAO, NICL, NIACL — all fully covered. The PDF reports helped me track my progress week by week. Highly recommended for insurance aspirants!",
     exam: "LIC Assistant 2024 — Selected",
     score: "Score: 97/100",
   },
@@ -88,7 +88,7 @@ export function TestimonialsSection() {
             Real Results from <span className="gradient-text">Real Aspirants</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Join 10L+ students who cracked their dream government jobs with ExamNexa
+            Join 10L+ students who cracked their dream government jobs with TestNova
           </p>
         </motion.div>
 

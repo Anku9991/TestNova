@@ -49,7 +49,7 @@ export default function LoginPage() {
     setGoogleLoading(true);
     try {
       await loginWithGoogle();
-      toast.success("Welcome to ExamNexa!");
+      toast.success("Welcome to TestNova!");
       router.push(redirect);
     } catch {
       toast.error("Google login failed. Please try again.");

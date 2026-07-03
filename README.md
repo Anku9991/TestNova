@@ -1,4 +1,4 @@
-# ExamNexa 🎓
+# TestNova 🎓
 
 > **India's #1 Premium Government Competitive Exam CBT SaaS Platform**
 
@@ -12,10 +12,10 @@
 
 ## 📌 Overview
 
-ExamNexa is a production-ready, scalable SaaS platform for government competitive exam preparation. It provides a real Computer Based Test (CBT) experience for SSC, Railway, Banking, UPSC, Defence, Teaching, and 200+ more government exams.
+TestNova is a production-ready, scalable SaaS platform for government competitive exam preparation. It provides a real Computer Based Test (CBT) experience for SSC, Railway, Banking, UPSC, Defence, Teaching, and 200+ more government exams.
 
 **Key Links:**
-- 🌐 Production: [https://examnexa.com](https://examnexa.com)
+- 🌐 Production: [https://TestNova.com](https://TestNova.com)
 - 📦 GitHub: [https://github.com/Anku9991/TestNova](https://github.com/Anku9991/TestNova)
 - 🚀 Vercel: [https://vercel.com/ankush-s-projects-3d237917/test-nova](https://vercel.com/ankush-s-projects-3d237917/test-nova)
 - 🔥 Firebase: [Firebase Console](https://console.firebase.google.com)
@@ -42,7 +42,7 @@ ExamNexa is a production-ready, scalable SaaS platform for government competitiv
 ## 📁 Project Structure
 
 ```
-examnexa/
+TestNova/
 ├── src/
 │   ├── app/
 │   │   ├── (auth)/              # Login, Register, Forgot Password
@@ -205,7 +205,7 @@ firebase deploy --only hosting
 
 ## 📱 PWA
 
-ExamNexa is a Progressive Web App (PWA). Users can:
+TestNova is a Progressive Web App (PWA). Users can:
 - Install it on Android/iOS home screen
 - Study offline (service worker caches key assets)
 - Receive push notifications for upcoming tests
@@ -248,12 +248,12 @@ npm run typecheck    # TypeScript type check
 ## 📄 License
 
 This is proprietary software. All rights reserved.
-Copyright © 2025 ExamNexa. Unauthorized copying, distribution, or use is strictly prohibited.
+Copyright © 2025 TestNova. Unauthorized copying, distribution, or use is strictly prohibited.
 
 ---
 
 ## 🤝 Support
 
-- Email: support@examnexa.com
+- Email: support@TestNova.com
 - Phone: +91 98765 43210
-- Support Portal: [help.examnexa.com](https://help.examnexa.com)
+- Support Portal: [help.TestNova.com](https://help.TestNova.com)

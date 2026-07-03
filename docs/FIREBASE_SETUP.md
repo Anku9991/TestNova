@@ -1,10 +1,10 @@
-# Firebase Setup Guide — ExamNexa
+# Firebase Setup Guide — TestNova
 
 ## Step 1: Create a New Firebase Project
 
 1. Go to [Firebase Console](https://console.firebase.google.com)
 2. Click **"Add project"**
-3. Project name: `examnexa-prod` (or your preferred name)
+3. Project name: `TestNova-prod` (or your preferred name)
 4. Enable Google Analytics: **Yes** (for Firebase Analytics)
 5. Select/create a Google Analytics account
 6. Click **"Create project"**
@@ -14,7 +14,7 @@
 ## Step 2: Register Web App
 
 1. In your Firebase project, click the **Web icon** (`</>`)
-2. App nickname: `ExamNexa Web`
+2. App nickname: `TestNova Web`
 3. Check **"Also set up Firebase Hosting"**
 4. Click **"Register app"**
 5. **Copy the Firebase config** — you'll need it for `.env.local`
@@ -31,7 +31,7 @@
 4. Under **Settings → Authorized domains**, add:
    - `localhost`
    - `your-vercel-domain.vercel.app`
-   - `examnexa.com` (your custom domain)
+   - `TestNova.com` (your custom domain)
 
 ---
 

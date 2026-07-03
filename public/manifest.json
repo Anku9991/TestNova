@@ -1,6 +1,6 @@
 {
-  "name": "ExamNexa",
-  "short_name": "ExamNexa",
+  "name": "TestNova",
+  "short_name": "TestNova",
   "description": "India's #1 Government Exam CBT Preparation Platform",
   "start_url": "/student/dashboard",
   "display": "standalone",
