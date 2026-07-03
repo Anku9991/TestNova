@@ -1,0 +1,179 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ────────────────────────────────────────────
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return request.auth.uid == uid;
+    }
+
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isSuperAdmin() {
+      return isAuthenticated() && getUserRole() == 'super_admin';
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && getUserRole() in ['admin', 'super_admin'];
+    }
+
+    function isTeacher() {
+      return isAuthenticated() && getUserRole() in ['teacher', 'admin', 'super_admin'];
+    }
+
+    function isStudent() {
+      return isAuthenticated() && getUserRole() == 'student';
+    }
+
+    function isActiveUser() {
+      return isAuthenticated() &&
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isActive == true;
+    }
+
+    // ── Users collection ────────────────────────────────────────────
+    match /users/{userId} {
+      // Users can read and update their own profile
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow create: if isAuthenticated() && isOwner(userId);
+      allow update: if isAuthenticated() && (
+        isOwner(userId) && !('role' in request.resource.data.diff(resource.data).affectedKeys()) ||
+        isSuperAdmin()
+      );
+      allow delete: if isSuperAdmin();
+    }
+
+    // ── Exams collection ────────────────────────────────────────────
+    match /exams/{examId} {
+      // Published exams are publicly readable
+      allow read: if resource.data.isPublished == true || isAdmin();
+      allow create: if isTeacher();
+      allow update: if isTeacher();
+      allow delete: if isAdmin();
+    }
+
+    // ── Questions collection ─────────────────────────────────────────
+    match /questions/{questionId} {
+      allow read: if isActiveUser();
+      allow create: if isTeacher();
+      allow update: if isTeacher();
+      allow delete: if isAdmin();
+    }
+
+    // ── Attempts collection ─────────────────────────────────────────
+    match /attempts/{attemptId} {
+      // Students can only read/create their own attempts
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || isAdmin()
+      );
+      allow create: if isActiveUser() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid &&
+        resource.data.isSubmitted == false
+      );
+      allow delete: if isSuperAdmin();
+    }
+
+    // ── Results collection ───────────────────────────────────────────
+    match /results/{resultId} {
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || isAdmin()
+      );
+      allow create: if isActiveUser();
+      allow update: if isAdmin();
+      allow delete: if isSuperAdmin();
+    }
+
+    // ── Subscriptions collection ─────────────────────────────────────
+    match /subscriptions/{subId} {
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || isAdmin()
+      );
+      allow create: if isAdmin(); // Only created server-side via API
+      allow update: if isAdmin();
+      allow delete: if isSuperAdmin();
+    }
+
+    // ── Categories (public read) ──────────────────────────────────────
+    match /categories/{catId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Subjects ─────────────────────────────────────────────────────
+    match /subjects/{subjectId} {
+      allow read: if isActiveUser();
+      allow write: if isAdmin();
+    }
+
+    // ── Notifications ─────────────────────────────────────────────────
+    match /notifications/{notifId} {
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        resource.data.userId == 'all' ||
+        isAdmin()
+      );
+      allow create: if isAdmin();
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+
+    // ── Blogs (public read when published) ────────────────────────────
+    match /blogs/{blogId} {
+      allow read: if resource.data.isPublished == true || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ── Support tickets ───────────────────────────────────────────────
+    match /supportTickets/{ticketId} {
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || isAdmin()
+      );
+      allow create: if isActiveUser();
+      allow update: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid || isAdmin()
+      );
+      allow delete: if isSuperAdmin();
+    }
+
+    // ── Audit logs (super admin only) ────────────────────────────────
+    match /auditLogs/{logId} {
+      allow read: if isSuperAdmin();
+      allow create: if isAdmin(); // Server-side logging
+      allow update, delete: if false; // Immutable
+    }
+
+    // ── Plans (public read) ───────────────────────────────────────────
+    match /plans/{planId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    // ── Coupons ───────────────────────────────────────────────────────
+    match /coupons/{couponId} {
+      allow read: if isActiveUser(); // For validation
+      allow write: if isSuperAdmin();
+    }
+
+    // ── Banners (public read) ─────────────────────────────────────────
+    match /banners/{bannerId} {
+      allow read: if resource.data.isActive == true || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ── Bookmarks ────────────────────────────────────────────────────
+    match /bookmarks/{bookmarkId} {
+      allow read, write: if isAuthenticated() &&
+        request.auth.uid == resource.data.userId;
+      allow create: if isAuthenticated() &&
+        request.resource.data.userId == request.auth.uid;
+    }
+  }
+}
