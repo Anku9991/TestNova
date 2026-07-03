@@ -15,26 +15,35 @@ import type { UserRole } from "@/types";
 
 const googleProvider = new GoogleAuthProvider();
 
+function requireAuth() {
+  if (!auth) throw new Error("Firebase not initialized — check environment variables.");
+  return auth;
+}
+function requireDb() {
+  if (!db) throw new Error("Firebase not initialized — check environment variables.");
+  return db;
+}
+
 export async function registerWithEmail(
   email: string,
   password: string,
   name: string,
   role: UserRole = "student"
 ) {
-  const credential = await createUserWithEmailAndPassword(auth, email, password);
+  const credential = await createUserWithEmailAndPassword(requireAuth(), email, password);
   await updateProfile(credential.user, { displayName: name });
   await createUserDocument(credential.user, { role, name });
   return credential.user;
 }
 
 export async function loginWithEmail(email: string, password: string) {
-  const credential = await signInWithEmailAndPassword(auth, email, password);
+  const credential = await signInWithEmailAndPassword(requireAuth(), email, password);
   return credential.user;
 }
 
 export async function loginWithGoogle() {
-  const credential = await signInWithPopup(auth, googleProvider);
-  const userDoc = await getDoc(doc(db, "users", credential.user.uid));
+  const credential = await signInWithPopup(requireAuth(), googleProvider);
+  const userDoc = await getDoc(doc(requireDb(), "users", credential.user.uid));
   if (!userDoc.exists()) {
     await createUserDocument(credential.user, { role: "student" });
   }
@@ -42,11 +51,11 @@ export async function loginWithGoogle() {
 }
 
 export async function logout() {
-  await signOut(auth);
+  await signOut(requireAuth());
 }
 
 export async function resetPassword(email: string) {
-  await sendPasswordResetEmail(auth, email);
+  await sendPasswordResetEmail(requireAuth(), email);
 }
 
 export async function createUserDocument(
@@ -54,7 +63,7 @@ export async function createUserDocument(
   extras: { role?: UserRole; name?: string }
 ) {
   await setDoc(
-    doc(db, "users", user.uid),
+    doc(requireDb(), "users", user.uid),
     {
       uid: user.uid,
       email: user.email,
@@ -71,7 +80,7 @@ export async function createUserDocument(
 }
 
 export async function getUserDocument(uid: string) {
-  const docRef = doc(db, "users", uid);
+  const docRef = doc(requireDb(), "users", uid);
   const docSnap = await getDoc(docRef);
   return docSnap.exists() ? docSnap.data() : null;
 }

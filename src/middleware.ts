@@ -5,14 +5,6 @@ import type { NextRequest } from "next/server";
 const protectedRoutes = ["/student", "/admin", "/super-admin"];
 // Routes that are only for unauthenticated users
 const authRoutes = ["/login", "/register", "/forgot-password"];
-// Role-based route prefixes
-const roleRoutes: Record<string, string[]> = {
-  super_admin: ["/super-admin", "/admin", "/student"],
-  admin: ["/admin", "/student"],
-  teacher: ["/admin/questions", "/admin/exams", "/student"],
-  content_manager: ["/admin/questions", "/admin/exams", "/student"],
-  student: ["/student"],
-};
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

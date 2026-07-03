@@ -1,8 +1,15 @@
 "use client";
 
 import { ThemeProvider } from "next-themes";
-import { AuthProvider } from "@/hooks/useAuth";
 import { Toaster } from "sonner";
+import dynamic from "next/dynamic";
+
+// Lazy-load AuthProvider client-side only to prevent Firebase
+// from being called during static page generation
+const ClientAuthProvider = dynamic(
+  () => import("@/hooks/useAuth").then((m) => ({ default: m.AuthProvider })),
+  { ssr: false }
+);
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -12,7 +19,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       enableSystem
       disableTransitionOnChange={false}
     >
-      <AuthProvider>
+      <ClientAuthProvider>
         {children}
         <Toaster
           position="top-right"
@@ -26,7 +33,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             },
           }}
         />
-      </AuthProvider>
+      </ClientAuthProvider>
     </ThemeProvider>
   );
 }

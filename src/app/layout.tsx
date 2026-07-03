@@ -3,6 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -16,6 +17,9 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL || "https://examnexa.com"
+  ),
   title: {
     default: "ExamNexa — Premium Government Exam Preparation Platform",
     template: "%s | ExamNexa",

@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Play, Star, Users, CheckCircle, Sparkles } from "lucide-react";
+import { ArrowRight, Play, Star, CheckCircle, Sparkles } from "lucide-react";
 
 const examTags = [
   "SSC CGL", "SSC CHSL", "SSC MTS", "SSC CPO", "Delhi Police",

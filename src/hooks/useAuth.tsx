@@ -16,16 +16,17 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
   user: null,
   userProfile: null,
-  loading: true,
+  loading: false,
   isAuthenticated: false,
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!!auth); // only show loading if Firebase is ready
 
   useEffect(() => {
+    if (!auth) return; // Firebase not initialized (missing env vars)
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
       if (!firebaseUser) {
@@ -37,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !db) return;
     const unsubscribe = onSnapshot(doc(db, "users", user.uid), (snap) => {
       if (snap.exists()) {
         setUserProfile(snap.data() as UserProfile);

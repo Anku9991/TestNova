@@ -48,7 +48,8 @@ interface CBTEngineProps {
   totalDurationMinutes?: number;
 }
 
-export function CBTEngine({ examId, totalDurationMinutes = 60 }: CBTEngineProps) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function CBTEngine({ examId: _examId, totalDurationMinutes = 60 }: CBTEngineProps) {
   const [questions] = useState<Question[]>(sampleQuestions);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [responses, setResponses] = useState<Record<string, string>>({});
@@ -67,6 +68,14 @@ export function CBTEngine({ examId, totalDurationMinutes = 60 }: CBTEngineProps)
 
   const currentQuestion = questions[currentIndex];
 
+  // Declare handleSubmit early so the timer useEffect can reference it
+  const handleSubmit = useCallback(() => {
+    setExamSubmitted(true);
+    setShowSubmitConfirm(false);
+    toast.success("Exam submitted! Processing your results...");
+    // In real app: save to Firestore, redirect to results page
+  }, []);
+
   // Timer
   useEffect(() => {
     if (examSubmitted) return;
@@ -81,7 +90,7 @@ export function CBTEngine({ examId, totalDurationMinutes = 60 }: CBTEngineProps)
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [examSubmitted]);
+  }, [examSubmitted, handleSubmit]);
 
   // Violation detection — tab switch
   useEffect(() => {
@@ -132,13 +141,6 @@ export function CBTEngine({ examId, totalDurationMinutes = 60 }: CBTEngineProps)
   const goTo = useCallback((index: number) => {
     setCurrentIndex(Math.max(0, Math.min(index, questions.length - 1)));
   }, [questions.length]);
-
-  const handleSubmit = useCallback(() => {
-    setExamSubmitted(true);
-    setShowSubmitConfirm(false);
-    toast.success("Exam submitted! Processing your results...");
-    // In real app: save to Firestore, redirect to results page
-  }, []);
 
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {

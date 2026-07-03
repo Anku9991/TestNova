@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import {
   Building2, Train, Landmark, Shield, GraduationCap, Stethoscope,
-  Scale, Cpu, BookOpen, Star, ChevronRight, Award,
+  Scale, Cpu, BookOpen, ChevronRight, Award,
 } from "lucide-react";
 
 const categories = [

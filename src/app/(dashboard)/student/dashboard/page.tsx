@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { motion } from "framer-motion";
 import {
   BookOpen, Trophy, BarChart3, Target, ArrowRight,
@@ -10,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
+
 
 const performanceData = [
   { day: "Mon", score: 65 },

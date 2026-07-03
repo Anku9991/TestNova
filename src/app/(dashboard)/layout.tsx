@@ -1,5 +1,10 @@
+// Force all dashboard routes to be dynamically rendered at request time
+// (Firebase Auth cannot run during static build without env vars)
+export const dynamic = "force-dynamic";
+
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import type { Metadata } from "next";
+
 
 export const metadata: Metadata = {
   title: "Dashboard | ExamNexa",
