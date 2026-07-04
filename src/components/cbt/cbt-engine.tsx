@@ -69,7 +69,7 @@ export function CBTEngine({ examId, totalDurationMinutes = 60 }: CBTEngineProps)
     async function loadExamData() {
       try {
         const { db } = await import("@/lib/firebase/config");
-        const { doc, getDoc, collection, query, limit, getDocs } = await import("firebase/firestore");
+        const { doc, getDoc, collection, query, limit, getDocs, where } = await import("firebase/firestore");
         
         // 1. Fetch Exam details (to get duration and rules)
         const eDoc = await getDoc(doc(db, "exams", examId));
@@ -78,8 +78,14 @@ export function CBTEngine({ examId, totalDurationMinutes = 60 }: CBTEngineProps)
           setTimeLeft((eDoc.data().duration || 60) * 60);
         }
 
-        // 2. Fetch Questions (limit to 100 for now, in real app use examId filter)
-        const qSnap = await getDocs(query(collection(db, "questions"), limit(eDoc.exists() ? eDoc.data().totalQuestions : 100)));
+        // 2. Fetch Questions assigned to this exam
+        const qSnap = await getDocs(
+          query(
+            collection(db, "questions"), 
+            where("examId", "==", examId),
+            limit(eDoc.exists() ? eDoc.data().totalQuestions : 100)
+          )
+        );
         const qData = qSnap.docs.map((d, i) => ({
           id: d.id,
           number: i + 1,

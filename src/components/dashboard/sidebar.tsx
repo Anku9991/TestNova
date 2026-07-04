@@ -34,16 +34,15 @@ const studentNav = [
 ];
 
 const adminNav = [
-  { group: "Dashboard", items: [{ icon: LayoutDashboard, label: "Dashboard", href: "/admin/dashboard" }] },
+  { group: "Dashboard", items: [{ icon: LayoutDashboard, label: "Dashboard", href: "/super-admin/dashboard" }] },
   { group: "Management", items: [
-    { icon: Users, label: "Users", href: "/admin/users" },
-    { icon: BookOpen, label: "Exams", href: "/admin/exams" },
-    { icon: HelpCircle, label: "Questions", href: "/admin/questions" },
+    { icon: Users, label: "Users", href: "/super-admin/users/students" },
+    { icon: BookOpen, label: "Exams", href: "/super-admin/assessments/exams" },
+    { icon: Database, label: "Question Bank", href: "/super-admin/assessments/question-bank" },
     { icon: MessageSquare, label: "Support", href: "/admin/support" },
   ]},
   { group: "Analytics", items: [
-    { icon: BarChart3, label: "Reports", href: "/admin/reports" },
-    { icon: Settings, label: "Settings", href: "/admin/settings" },
+    { icon: BarChart3, label: "Reports", href: "/super-admin/revenue" },
   ]}
 ];
 
