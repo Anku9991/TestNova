@@ -80,7 +80,7 @@ export default function LoginPage() {
             <Zap className="w-5 h-5 text-secondary-400" />
           </div>
           <span className="font-display font-bold text-2xl text-white">
-            Exam<span className="text-primary-400">Nexa</span>
+            Test<span className="text-primary-400">Nova</span>
           </span>
         </Link>
         <h1 className="font-display text-2xl font-bold text-white mb-1">Welcome back!</h1>

@@ -79,7 +79,7 @@ export function DashboardSidebar() {
         </div>
         {!collapsed && (
           <span className="font-display font-bold text-lg">
-            Exam<span className="text-primary-500">Nexa</span>
+            Test<span className="text-primary-500">Nova</span>
           </span>
         )}
       </div>

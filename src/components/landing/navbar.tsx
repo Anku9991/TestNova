@@ -56,7 +56,7 @@ export function Navbar() {
             <Zap className="w-5 h-5 text-secondary-400" />
           </div>
           <span className="font-display font-bold text-xl tracking-tight">
-            Exam<span className="text-primary-500 dark:text-primary-400">Nexa</span>
+            Test<span className="text-primary-500 dark:text-primary-400">Nova</span>
           </span>
         </Link>
 
