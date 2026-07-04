@@ -43,7 +43,11 @@ export default function StudentSupportPage() {
       snapshot.forEach(doc => fetched.push({ id: doc.id, ...doc.data() } as SupportTicket));
       
       // Sort in memory to avoid composite index
-      fetched.sort((a, b) => b.updatedAt.toMillis() - a.updatedAt.toMillis());
+      fetched.sort((a, b) => {
+        const timeA = a.updatedAt?.toMillis ? a.updatedAt.toMillis() : (a.updatedAt as any)?.getTime?.() || 0;
+        const timeB = b.updatedAt?.toMillis ? b.updatedAt.toMillis() : (b.updatedAt as any)?.getTime?.() || 0;
+        return timeB - timeA;
+      });
       
       setTickets(fetched);
     } catch (error) {
