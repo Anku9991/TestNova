@@ -18,19 +18,15 @@ service cloud.firestore {
     }
 
     function isSuperAdmin() {
-      return isAuthenticated() && getUserRole() == 'super_admin';
+      return isAuthenticated() && (getUserRole() == 'super_admin' || getUserRole() == 'superadmin');
     }
 
     function isAdmin() {
-      return isAuthenticated() && (getUserRole() == 'admin' || getUserRole() == 'super_admin');
+      return isAuthenticated() && (getUserRole() == 'admin' || getUserRole() == 'super_admin' || getUserRole() == 'superadmin');
     }
 
     function isTeacher() {
-      return isAuthenticated() && getUserRole() in ['teacher', 'admin', 'super_admin'];
-    }
-
-    function isStudent() {
-      return isAuthenticated() && getUserRole() == 'student';
+      return isAuthenticated() && getUserRole() in ['teacher', 'admin', 'super_admin', 'superadmin'];
     }
 
     function isActiveUser() {
@@ -40,7 +36,6 @@ service cloud.firestore {
 
     // ── Users collection ────────────────────────────────────────────
     match /users/{userId} {
-      // Users can read and update their own profile
       allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
       allow create: if isAuthenticated() && isOwner(userId);
       allow update: if isAuthenticated() && (
@@ -50,10 +45,11 @@ service cloud.firestore {
       allow delete: if isSuperAdmin();
     }
 
-    // ── Exams collection ────────────────────────────────────────────
+    // ── Exams collection ─────────────────────────────────────────────
+    // BUG FIX: resource.data.isPublished only works for get, not list
     match /exams/{examId} {
-      // Published exams are publicly readable
-      allow read: if resource.data.isPublished == true || isAdmin();
+      allow get: if resource.data.isPublished == true || isAdmin();
+      allow list: if isAdmin() || isActiveUser();
       allow create: if isTeacher();
       allow update: if isTeacher();
       allow delete: if isAdmin();
@@ -61,10 +57,11 @@ service cloud.firestore {
 
     // ── Academics Collections ───────────────────────────────────────
     match /courses/{courseId} {
-      allow read: if true; // Courses can be viewed by anyone (even unauthenticated for marketing)
+      allow read: if true;
       allow write: if isAdmin();
     }
 
+    // BUG FIX: Removed duplicate/conflicting subjects rule. One rule only.
     match /subjects/{subjectId} {
       allow read: if true;
       allow write: if isAdmin();
@@ -82,7 +79,7 @@ service cloud.firestore {
 
     // ── Questions collection ─────────────────────────────────────────
     match /questions/{questionId} {
-      allow read: if isActiveUser();
+      allow read: if isActiveUser() || isAdmin();
       allow create: if isTeacher();
       allow update: if isTeacher();
       allow delete: if isAdmin();
@@ -90,11 +87,11 @@ service cloud.firestore {
 
     // ── Attempts collection ─────────────────────────────────────────
     match /attempts/{attemptId} {
-      // Students can only read/create their own attempts
-      allow read: if isAuthenticated() && (
+      allow get: if isAuthenticated() && (
         resource.data.userId == request.auth.uid || isAdmin()
       );
-      allow create: if isActiveUser() && request.resource.data.userId == request.auth.uid;
+      allow list: if isAdmin();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
       allow update: if isAuthenticated() && (
         resource.data.userId == request.auth.uid &&
         resource.data.isSubmitted == false
@@ -104,10 +101,11 @@ service cloud.firestore {
 
     // ── Results collection ───────────────────────────────────────────
     match /results/{resultId} {
-      allow read: if isAuthenticated() && (
+      allow get: if isAuthenticated() && (
         resource.data.userId == request.auth.uid || isAdmin()
       );
-      allow create: if isActiveUser();
+      allow list: if isAdmin() || isAuthenticated();
+      allow create: if isAuthenticated();
       allow update: if isAdmin();
       allow delete: if isSuperAdmin();
     }
@@ -117,7 +115,7 @@ service cloud.firestore {
       allow read: if isAuthenticated() && (
         resource.data.userId == request.auth.uid || isAdmin()
       );
-      allow create: if isAdmin(); // Only created server-side via API
+      allow create: if isAdmin();
       allow update: if isAdmin();
       allow delete: if isSuperAdmin();
     }
@@ -125,12 +123,6 @@ service cloud.firestore {
     // ── Categories (public read) ──────────────────────────────────────
     match /categories/{catId} {
       allow read: if true;
-      allow write: if isAdmin();
-    }
-
-    // ── Subjects ─────────────────────────────────────────────────────
-    match /subjects/{subjectId} {
-      allow read: if isActiveUser();
       allow write: if isAdmin();
     }
 
@@ -148,7 +140,8 @@ service cloud.firestore {
 
     // ── Blogs (public read when published) ────────────────────────────
     match /blogs/{blogId} {
-      allow read: if resource.data.isPublished == true || isAdmin();
+      allow get: if resource.data.isPublished == true || isAdmin();
+      allow list: if isAdmin();
       allow write: if isAdmin();
     }
 
@@ -157,7 +150,7 @@ service cloud.firestore {
       allow read: if isAuthenticated() && (
         resource.data.userId == request.auth.uid || isAdmin()
       );
-      allow create: if isActiveUser();
+      allow create: if isAuthenticated();
       allow update: if isAuthenticated() && (
         resource.data.userId == request.auth.uid || isAdmin()
       );
@@ -167,8 +160,8 @@ service cloud.firestore {
     // ── Audit logs (super admin only) ────────────────────────────────
     match /auditLogs/{logId} {
       allow read: if isSuperAdmin();
-      allow create: if isAdmin(); // Server-side logging
-      allow update, delete: if false; // Immutable
+      allow create: if isAdmin();
+      allow update, delete: if false; // Immutable logs
     }
 
     // ── Plans (public read) ───────────────────────────────────────────
@@ -179,22 +172,30 @@ service cloud.firestore {
 
     // ── Coupons ───────────────────────────────────────────────────────
     match /coupons/{couponId} {
-      allow read: if isActiveUser(); // For validation
+      allow read: if isAuthenticated();
       allow write: if isSuperAdmin();
     }
 
     // ── Banners (public read) ─────────────────────────────────────────
     match /banners/{bannerId} {
-      allow read: if resource.data.isActive == true || isAdmin();
+      allow get: if resource.data.isActive == true || isAdmin();
+      allow list: if isAdmin();
       allow write: if isAdmin();
     }
 
     // ── Bookmarks ────────────────────────────────────────────────────
+    // BUG FIX: Separated read/write rules properly
     match /bookmarks/{bookmarkId} {
-      allow read, write: if isAuthenticated() &&
-        request.auth.uid == resource.data.userId;
-      allow create: if isAuthenticated() &&
-        request.resource.data.userId == request.auth.uid;
+      allow get: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow list: if isAuthenticated();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // ── Exam Questions Mapping ────────────────────────────────────────
+    match /exam_questions/{mappingId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
     }
   }
 }

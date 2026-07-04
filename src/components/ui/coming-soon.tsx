@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Construction } from "lucide-react";
 
-export function ComingSoon({ title }: { title: string }) {
+export function ComingSoon({ title, description }: { title: string; description?: string }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
       <motion.div
@@ -16,7 +16,7 @@ export function ComingSoon({ title }: { title: string }) {
       </motion.div>
       <h1 className="text-3xl font-bold mb-4">{title}</h1>
       <p className="text-muted-foreground max-w-md">
-        This feature is currently under construction and will be available in the next major update. Stay tuned!
+        {description || "This feature is currently under construction and will be available in the next major update. Stay tuned!"}
       </p>
     </div>
   );

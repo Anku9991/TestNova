@@ -6,5 +6,6 @@ interface CBTPageProps {
 
 export default async function CBTPage({ params }: CBTPageProps) {
   const { examId } = await params;
-  return <CBTEngine examId={examId} totalDurationMinutes={60} />;
+  // Duration is fetched directly from Firestore by CBTEngine — no hardcoding needed
+  return <CBTEngine examId={examId} />;
 }
