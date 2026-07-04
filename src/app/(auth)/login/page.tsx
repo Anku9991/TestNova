@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -10,6 +10,7 @@ import { loginWithEmail, loginWithGoogle } from "@/lib/firebase/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useAuth } from "@/hooks/useAuth";
 
 const schema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -23,6 +24,13 @@ export default function LoginPage() {
   const redirect = searchParams.get("redirect") || "/student/dashboard";
   const [showPassword, setShowPassword] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const { isAuthenticated, loading } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated && !loading) {
+      router.push(redirect);
+    }
+  }, [isAuthenticated, loading, router, redirect]);
 
   const {
     register,

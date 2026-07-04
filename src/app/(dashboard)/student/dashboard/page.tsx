@@ -9,43 +9,43 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
+import { useExams } from "@/hooks/useExams";
+import { useResults } from "@/hooks/useResults";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
 
 
-const performanceData = [
-  { day: "Mon", score: 65 },
-  { day: "Tue", score: 72 },
-  { day: "Wed", score: 68 },
-  { day: "Thu", score: 80 },
-  { day: "Fri", score: 75 },
-  { day: "Sat", score: 88 },
-  { day: "Sun", score: 84 },
-];
-
-const upcomingTests = [
-  { id: "1", title: "SSC CGL Tier-1 Full Mock #12", date: "Today, 3:00 PM", duration: "60 min", questions: 100, isFree: false },
-  { id: "2", title: "Reasoning & GI Practice Set", date: "Tomorrow, 10:00 AM", duration: "30 min", questions: 50, isFree: true },
-  { id: "3", title: "Quantitative Aptitude Sprint", date: "Jul 6, 2:00 PM", duration: "45 min", questions: 75, isFree: false },
-];
-
-const recentResults = [
-  { exam: "RRB NTPC Mock #8", score: 84, total: 100, rank: 234, date: "Yesterday" },
-  { exam: "SSC CGL GK Booster", score: 71, total: 100, rank: 512, date: "2 days ago" },
-  { exam: "IBPS PO Prelims #5", score: 92, total: 100, rank: 89, date: "3 days ago" },
-];
-
-const statCards = [
-  { label: "Tests Attempted", value: "47", change: "+5 this week", icon: BookOpen, color: "text-blue-500", bg: "bg-blue-500/10" },
-  { label: "Best Score", value: "94%", change: "+3% improvement", icon: Trophy, color: "text-yellow-500", bg: "bg-yellow-500/10" },
-  { label: "Avg Percentile", value: "78th", change: "Top 22%", icon: BarChart3, color: "text-green-500", bg: "bg-green-500/10" },
-  { label: "Study Streak", value: "12 days", change: "🔥 Keep going!", icon: Zap, color: "text-orange-500", bg: "bg-orange-500/10" },
-];
-
 export default function StudentDashboard() {
-  const { userProfile } = useAuth();
+  const { userProfile, user } = useAuth();
   const firstName = userProfile?.name?.split(" ")[0] || "Student";
+  const { exams } = useExams({ isPublished: true, limit: 3 });
+  const { results } = useResults(user?.uid, 10);
+
+  // Calculate dynamic stats
+  const totalAttempted = results.length;
+  const bestScore = results.length > 0 ? Math.max(...results.map(r => r.percentage)) : 0;
+  const avgPercentile = results.length > 0 
+    ? Math.round(results.reduce((acc, curr) => acc + (curr.rank ? curr.rank : 0), 0) / results.length) 
+    : 0;
+
+  const statCards = [
+    { label: "Tests Attempted", value: totalAttempted.toString(), change: "Lifetime", icon: BookOpen, color: "text-blue-500", bg: "bg-blue-500/10" },
+    { label: "Best Score", value: `${bestScore.toFixed(1)}%`, change: "All time high", icon: Trophy, color: "text-yellow-500", bg: "bg-yellow-500/10" },
+    { label: "Avg Rank", value: `#${avgPercentile}`, change: "Overall", icon: BarChart3, color: "text-green-500", bg: "bg-green-500/10" },
+    { label: "Study Streak", value: "Active", change: "🔥 Keep going!", icon: Zap, color: "text-orange-500", bg: "bg-orange-500/10" },
+  ];
+
+  // Map results for chart (last 7)
+  const performanceData = results.slice(0, 7).reverse().map(r => ({
+    day: r.createdAt.toLocaleDateString('en-US', { weekday: 'short' }),
+    score: r.percentage
+  }));
+
+  // Ensure chart isn't totally empty if no results
+  if (performanceData.length === 0) {
+    performanceData.push({ day: "Today", score: 0 });
+  }
 
   return (
     <div className="space-y-6 max-w-7xl">
@@ -88,13 +88,13 @@ export default function StudentDashboard() {
               <span className="badge-primary text-xs">AI Powered</span>
             </div>
             <p className="text-muted-foreground text-sm">
-              Complete 2 more tests today to maintain your streak and improve your Reasoning score by 8%.
+              Complete more tests today to maintain your streak and improve your score.
             </p>
           </div>
           <div className="flex items-center gap-3 flex-shrink-0">
             <div className="text-center">
-              <div className="font-display font-bold text-2xl text-primary-400">3/5</div>
-              <div className="text-xs text-muted-foreground">Tests done</div>
+              <div className="font-display font-bold text-2xl text-primary-400">{results.filter(r => r.createdAt.toDateString() === new Date().toDateString()).length}</div>
+              <div className="text-xs text-muted-foreground">Tests today</div>
             </div>
             <Link href="/student/tests" className="btn-primary text-xs px-4 py-2">
               Practice Now
@@ -140,8 +140,7 @@ export default function StudentDashboard() {
           className="card lg:col-span-2"
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className="font-display font-bold text-lg">Score Trend (Last 7 Days)</h2>
-            <span className="badge-success text-xs">+12% avg improvement</span>
+            <h2 className="font-display font-bold text-lg">Score Trend (Recent)</h2>
           </div>
           <ResponsiveContainer width="100%" height={200}>
             <AreaChart data={performanceData}>
@@ -153,7 +152,7 @@ export default function StudentDashboard() {
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis dataKey="day" tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} />
-              <YAxis tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} domain={[50, 100]} />
+              <YAxis tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }} domain={[0, 100]} />
               <Tooltip
                 contentStyle={{
                   background: "hsl(var(--card))",
@@ -181,11 +180,14 @@ export default function StudentDashboard() {
           className="card"
         >
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display font-bold text-base">Upcoming Tests</h2>
+            <h2 className="font-display font-bold text-base">New Tests</h2>
             <Link href="/student/tests" className="text-primary-500 text-xs hover:underline">View all</Link>
           </div>
           <div className="space-y-3">
-            {upcomingTests.map((test) => (
+            {exams.length === 0 && (
+              <p className="text-sm text-muted-foreground text-center py-4">No tests available right now.</p>
+            )}
+            {exams.map((test) => (
               <div key={test.id} className="p-3 rounded-xl bg-muted/50 hover:bg-muted transition-colors">
                 <div className="flex items-start justify-between gap-2 mb-1.5">
                   <span className="text-sm font-medium leading-snug">{test.title}</span>
@@ -196,8 +198,8 @@ export default function StudentDashboard() {
                   )}
                 </div>
                 <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{test.date}</span>
-                  <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{test.duration}</span>
+                  <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{test.createdAt.toLocaleDateString()}</span>
+                  <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{test.duration} min</span>
                 </div>
               </div>
             ))}
@@ -217,29 +219,40 @@ export default function StudentDashboard() {
           <Link href="/student/results" className="text-primary-500 text-sm hover:underline">View all →</Link>
         </div>
         <div className="space-y-3">
-          {recentResults.map((result, i) => (
-            <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors group cursor-pointer">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-primary-500/10 flex items-center justify-center">
-                  <Star className="w-5 h-5 text-primary-400" />
-                </div>
-                <div>
-                  <div className="font-medium text-sm">{result.exam}</div>
-                  <div className="text-xs text-muted-foreground">{result.date}</div>
-                </div>
+          {results.length === 0 && (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-3">
+                <Trophy className="w-8 h-8 text-muted-foreground" />
               </div>
-              <div className="flex items-center gap-6 text-right">
-                <div>
-                  <div className="font-bold text-lg">{result.score}%</div>
-                  <div className="text-xs text-muted-foreground">Score</div>
-                </div>
-                <div>
-                  <div className="font-bold text-base text-primary-400">#{result.rank}</div>
-                  <div className="text-xs text-muted-foreground">Rank</div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
-              </div>
+              <p className="text-muted-foreground text-sm">You haven&apos;t attempted any tests yet.</p>
+              <Link href="/student/tests" className="btn-primary mt-4 inline-flex">Take your first test</Link>
             </div>
+          )}
+          {results.slice(0, 3).map((result) => (
+            <Link key={result.id} href={`/student/results/${result.id}`}>
+              <div className="flex items-center justify-between p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors group cursor-pointer mb-3">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-primary-500/10 flex items-center justify-center">
+                    <Star className="w-5 h-5 text-primary-400" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-sm">Exam ID: {result.examId.slice(0, 8)}</div>
+                    <div className="text-xs text-muted-foreground">{result.createdAt.toLocaleDateString()}</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-6 text-right">
+                  <div>
+                    <div className="font-bold text-lg">{result.percentage.toFixed(1)}%</div>
+                    <div className="text-xs text-muted-foreground">Score</div>
+                  </div>
+                  <div>
+                    <div className="font-bold text-base text-primary-400">#{result.rank || '-'}</div>
+                    <div className="text-xs text-muted-foreground">Rank</div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
+                </div>
+              </div>
+            </Link>
           ))}
         </div>
       </motion.div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -10,6 +10,7 @@ import { registerWithEmail, loginWithGoogle } from "@/lib/firebase/auth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useAuth } from "@/hooks/useAuth";
 
 const schema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -36,6 +37,13 @@ export default function RegisterPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const { isAuthenticated, loading } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated && !loading) {
+      router.push("/student/dashboard");
+    }
+  }, [isAuthenticated, loading, router]);
 
   const {
     register,
