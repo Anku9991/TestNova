@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import { adminAuth } from "@/lib/firebase/admin";
-// @ts-ignore
-import pdf from "pdf-parse";
 import mammoth from "mammoth";
+// Use require for CommonJS module to bypass default export compilation warning
+const pdf = require("pdf-parse");
 
 export async function POST(request: Request) {
   try {
