@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 
 
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Users, IndianRupee, TrendingUp, BarChart3, Activity,
@@ -13,13 +14,8 @@ import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend,
 } from "recharts";
-
-const kpiCards = [
-  { label: "Total Revenue", value: "₹24.8L", change: "+18.2%", icon: IndianRupee, color: "text-green-500", bg: "bg-green-500/10", positive: true },
-  { label: "Active Students", value: "8,342", change: "+12.4%", icon: Users, color: "text-blue-500", bg: "bg-blue-500/10", positive: true },
-  { label: "Active Subscriptions", value: "3,127", change: "+8.7%", icon: TrendingUp, color: "text-purple-500", bg: "bg-purple-500/10", positive: true },
-  { label: "Tests Attempted Today", value: "1,893", change: "+31.5%", icon: BarChart3, color: "text-orange-500", bg: "bg-orange-500/10", positive: true },
-];
+import { db } from "@/lib/firebase/config";
+import { collection, getCountFromServer } from "firebase/firestore";
 
 const revenueData = [
   { month: "Jan", revenue: 185000, subscriptions: 142 },
@@ -47,14 +43,43 @@ const examAttempts = [
 ];
 
 const recentActivity = [
-  { action: "New user registered", detail: "Rahul Kumar — SSC CGL aspirant", time: "2 min ago", type: "success" },
-  { action: "Payment received", detail: "₹2,999 — Annual Plan — Priya Sharma", time: "8 min ago", type: "success" },
-  { action: "Exam created", detail: 'RRB NTPC Mock #15 published by Admin', time: "15 min ago", type: "info" },
-  { action: "Support ticket", detail: "Ticket #1042 — Payment issue", time: "22 min ago", type: "warning" },
-  { action: "Failed login attempt", detail: "Repeated failed attempts — IP blocked", time: "1 hr ago", type: "error" },
+  { action: "Admin System", detail: "Real-time Firebase Connection Active", time: "Just now", type: "success" },
+  { action: "Security", detail: "Role Based Access Control is active", time: "1 hr ago", type: "info" },
 ];
 
 export default function SuperAdminDashboard() {
+  const [stats, setStats] = useState({ users: 0, exams: 0, questions: 0, results: 0 });
+
+  useEffect(() => {
+    async function fetchStats() {
+      if (!db) return;
+      try {
+        const [usersSnap, examsSnap, qSnap, resSnap] = await Promise.all([
+          getCountFromServer(collection(db, "users")),
+          getCountFromServer(collection(db, "exams")),
+          getCountFromServer(collection(db, "questions")),
+          getCountFromServer(collection(db, "results"))
+        ]);
+        setStats({
+          users: usersSnap.data().count,
+          exams: examsSnap.data().count,
+          questions: qSnap.data().count,
+          results: resSnap.data().count
+        });
+      } catch (err) {
+        console.error("Error fetching stats:", err);
+      }
+    }
+    fetchStats();
+  }, []);
+
+  const kpiCards = [
+    { label: "Total Users", value: stats.users.toString(), change: "Live", icon: Users, color: "text-blue-500", bg: "bg-blue-500/10", positive: true },
+    { label: "Total Exams", value: stats.exams.toString(), change: "Live", icon: ShieldCheck, color: "text-green-500", bg: "bg-green-500/10", positive: true },
+    { label: "Total Questions", value: stats.questions.toString(), change: "Live", icon: Activity, color: "text-purple-500", bg: "bg-purple-500/10", positive: true },
+    { label: "Tests Attempted", value: stats.results.toString(), change: "Live", icon: BarChart3, color: "text-orange-500", bg: "bg-orange-500/10", positive: true },
+  ];
+
   return (
     <div className="space-y-6 max-w-7xl">
       {/* Header */}

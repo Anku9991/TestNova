@@ -139,7 +139,9 @@ export default function AdminQuestionsPage() {
             <Upload className="w-5 h-5" />
             Import CSV
           </button>
-          <button className="btn-primary">
+          <button onClick={() => {
+            alert("For Phase 2, please use 'Import CSV' to bulk upload questions! Manual question builder will be enabled in Phase 4.");
+          }} className="btn-primary">
             <Plus className="w-5 h-5" />
             Add Question
           </button>
