@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Sun, Moon, Menu, X, BookOpen, ChevronDown, Zap,
 } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 
 const navLinks = [
   {
@@ -51,14 +52,7 @@ export function Navbar() {
     >
       <nav className="container-xl flex items-center justify-between h-16 md:h-20">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-600 to-primary-900 flex items-center justify-center shadow-glow group-hover:shadow-glow transition-shadow duration-300">
-            <Zap className="w-5 h-5 text-secondary-400" />
-          </div>
-          <span className="font-display font-bold text-xl tracking-tight">
-            Test<span className="text-primary-500 dark:text-primary-400">Nova</span>
-          </span>
-        </Link>
+        <Logo />
 
         {/* Desktop Nav */}
         <div className="hidden lg:flex items-center gap-1">

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Loader2, Zap, Mail, Lock, User, GraduationCap } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 import { toast } from "sonner";
 import { registerWithEmail, loginWithGoogle } from "@/lib/firebase/auth";
 import { useForm } from "react-hook-form";
@@ -87,14 +88,7 @@ export default function RegisterPage() {
       className="glass-card p-8"
     >
       <div className="text-center mb-6">
-        <Link href="/" className="inline-flex items-center gap-2 mb-4">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-600 to-primary-900 flex items-center justify-center">
-            <Zap className="w-5 h-5 text-secondary-400" />
-          </div>
-          <span className="font-display font-bold text-xl text-white">
-            Test<span className="text-primary-400">Nova</span>
-          </span>
-        </Link>
+        <Logo className="justify-center mb-4" imageClassName="h-8 sm:h-10" />
         <h1 className="font-display text-2xl font-bold text-white mb-1">Create your account</h1>
         <p className="text-white/50 text-sm">Start your free exam preparation journey</p>
       </div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Loader2, Zap, Mail, Lock } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 import { toast } from "sonner";
 import { loginWithEmail, loginWithGoogle } from "@/lib/firebase/auth";
 import { useForm } from "react-hook-form";
@@ -75,14 +76,7 @@ export default function LoginPage() {
     >
       {/* Logo */}
       <div className="text-center mb-8">
-        <Link href="/" className="inline-flex items-center gap-2 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-600 to-primary-900 flex items-center justify-center shadow-glow">
-            <Zap className="w-5 h-5 text-secondary-400" />
-          </div>
-          <span className="font-display font-bold text-2xl text-white">
-            Test<span className="text-primary-400">Nova</span>
-          </span>
-        </Link>
+        <Logo className="justify-center mb-6" imageClassName="h-10 sm:h-12" />
         <h1 className="font-display text-2xl font-bold text-white mb-1">Welcome back!</h1>
         <p className="text-white/50 text-sm">Sign in to continue your exam preparation</p>
       </div>

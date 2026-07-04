@@ -14,6 +14,7 @@ import { logout } from "@/lib/firebase/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { getInitials } from "@/lib/utils";
+import { Logo } from "@/components/ui/logo";
 
 const studentNav = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/student/dashboard" },
@@ -74,13 +75,12 @@ export function DashboardSidebar() {
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className={`flex items-center gap-3 px-4 py-5 border-b border-border ${collapsed ? "justify-center" : ""}`}>
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-600 to-primary-900 flex items-center justify-center flex-shrink-0">
-          <Zap className="w-5 h-5 text-secondary-400" />
-        </div>
-        {!collapsed && (
-          <span className="font-display font-bold text-lg">
-            Test<span className="text-primary-500">Nova</span>
-          </span>
+        {!collapsed ? (
+          <Logo href="" />
+        ) : (
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-600 to-primary-900 flex items-center justify-center flex-shrink-0">
+            <Zap className="w-5 h-5 text-secondary-400" />
+          </div>
         )}
       </div>
 
