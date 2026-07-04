@@ -2,6 +2,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signInWithRedirect,
+  signInWithPopup,
   getRedirectResult,
   GoogleAuthProvider,
   signOut,
@@ -44,7 +45,14 @@ export async function loginWithEmail(email: string, password: string) {
 }
 
 export async function loginWithGoogle() {
-  await signInWithRedirect(requireAuth(), googleProvider);
+  const credential = await signInWithPopup(requireAuth(), googleProvider);
+  if (credential) {
+    const userDoc = await getDoc(doc(requireDb(), "users", credential.user.uid));
+    if (!userDoc.exists()) {
+      await createUserDocument(credential.user, { role: "student" });
+    }
+  }
+  return credential.user;
 }
 
 export async function handleGoogleRedirect() {
