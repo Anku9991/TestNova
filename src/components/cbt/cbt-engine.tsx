@@ -84,7 +84,7 @@ export function CBTEngine({ examId, totalDurationMinutes = 60 }: CBTEngineProps)
           id: d.id,
           number: i + 1,
           ...d.data()
-        }));
+        } as Question));
         
         setQuestions(qData);
         
