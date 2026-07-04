@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
   Clock, Flag, ChevronLeft, ChevronRight, Maximize2, Minimize2,
-  AlertTriangle, CheckCircle, LayoutGrid, X, Send,
+  AlertTriangle, CheckCircle, LayoutGrid, X, Send, Loader2
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatTime } from "@/lib/utils";
@@ -49,32 +49,118 @@ interface CBTEngineProps {
   totalDurationMinutes?: number;
 }
 
-export function CBTEngine({ examId: _examId, totalDurationMinutes = 60 }: CBTEngineProps) {
-  const [questions] = useState<Question[]>(sampleQuestions);
+export function CBTEngine({ examId, totalDurationMinutes = 60 }: CBTEngineProps) {
+  const [questions, setQuestions] = useState<any[]>([]);
+  const [examDoc, setExamDoc] = useState<any>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [responses, setResponses] = useState<Record<string, string>>({});
-  const [statuses, setStatuses] = useState<Record<string, QuestionStatus>>(() => {
-    const init: Record<string, QuestionStatus> = {};
-    sampleQuestions.forEach((q) => (init[q.id] = "unvisited"));
-    return init;
-  });
+  const [statuses, setStatuses] = useState<Record<string, QuestionStatus>>({});
   const [timeLeft, setTimeLeft] = useState(totalDurationMinutes * 60);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showPalette, setShowPalette] = useState(true);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
   const [violations, setViolations] = useState(0);
   const [examSubmitted, setExamSubmitted] = useState(false);
+  const [loading, setLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    async function loadExamData() {
+      try {
+        const { db } = await import("@/lib/firebase/config");
+        const { doc, getDoc, collection, query, limit, getDocs } = await import("firebase/firestore");
+        
+        // 1. Fetch Exam details (to get duration and rules)
+        const eDoc = await getDoc(doc(db, "exams", examId));
+        if (eDoc.exists()) {
+          setExamDoc(eDoc.data());
+          setTimeLeft((eDoc.data().duration || 60) * 60);
+        }
+
+        // 2. Fetch Questions (limit to 100 for now, in real app use examId filter)
+        const qSnap = await getDocs(query(collection(db, "questions"), limit(eDoc.exists() ? eDoc.data().totalQuestions : 100)));
+        const qData = qSnap.docs.map((d, i) => ({
+          id: d.id,
+          number: i + 1,
+          ...d.data()
+        }));
+        
+        setQuestions(qData);
+        
+        // Init statuses
+        const init: Record<string, QuestionStatus> = {};
+        qData.forEach((q) => (init[q.id] = "unvisited"));
+        setStatuses(init);
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to load CBT data:", err);
+        toast.error("Failed to load exam data.");
+      }
+    }
+    loadExamData();
+  }, [examId]);
 
   const currentQuestion = questions[currentIndex];
 
   // Declare handleSubmit early so the timer useEffect can reference it
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     setExamSubmitted(true);
     setShowSubmitConfirm(false);
-    toast.success("Exam submitted! Processing your results...");
-    // In real app: save to Firestore, redirect to results page
-  }, []);
+    toast.info("Exam submitted! Processing your results...", { duration: 4000 });
+    
+    try {
+      const { db } = await import("@/lib/firebase/config");
+      const { collection, addDoc, serverTimestamp } = await import("firebase/firestore");
+      const { getAuth } = await import("firebase/auth");
+      const user = getAuth().currentUser;
+
+      if (!user) {
+        toast.error("You must be logged in to save results.");
+        return;
+      }
+
+      // Calculate score
+      let correct = 0;
+      let incorrect = 0;
+      let score = 0;
+      
+      questions.forEach((q) => {
+        const userAnswer = responses[q.id];
+        if (userAnswer) {
+          if (userAnswer === q.correctAnswer) {
+            correct++;
+            score += (q.marks || 1);
+          } else {
+            incorrect++;
+            score -= (q.negativeMarks || 0);
+          }
+        }
+      });
+
+      const totalMarks = questions.reduce((acc, q) => acc + (q.marks || 1), 0);
+      const percentage = (score / totalMarks) * 100;
+
+      const resultRef = await addDoc(collection(db, "results"), {
+        userId: user.uid,
+        examId: examId,
+        score: score,
+        totalMarks: totalMarks,
+        percentage: percentage,
+        correctAnswers: correct,
+        incorrectAnswers: incorrect,
+        skippedAnswers: questions.length - (correct + incorrect),
+        timeTaken: (examDoc?.duration || 60) * 60 - timeLeft,
+        responses: responses,
+        createdAt: serverTimestamp()
+      });
+
+      window.location.href = `/student/results/${resultRef.id}`;
+    } catch (err) {
+      console.error("Error saving result:", err);
+      toast.error("Failed to save result!");
+    }
+  }, [responses, questions, examId, examDoc, timeLeft]);
+
 
   // Timer
   useEffect(() => {
@@ -155,6 +241,17 @@ export function CBTEngine({ examId: _examId, totalDurationMinutes = 60 }: CBTEng
   const answered = Object.keys(responses).length;
   const marked = Object.values(statuses).filter((s) => s === "marked" || s === "answered_marked").length;
   const notVisited = Object.values(statuses).filter((s) => s === "unvisited").length;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-10 h-10 animate-spin text-primary-500" />
+          <p className="text-muted-foreground font-medium">Loading CBT Environment...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (examSubmitted) {
     return (

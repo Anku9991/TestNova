@@ -14,23 +14,8 @@ import {
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
-const mockResult = {
-  score: 142.5,
-  totalMarks: 200,
-  percentage: 71.25,
-  correct: 75,
-  incorrect: 15,
-  skipped: 10,
-  timeTaken: "52m 14s",
-  rank: 124,
-  totalCandidates: 1250,
-  topicAnalysis: [
-    { name: "Quantitative Aptitude", score: 45, max: 50 },
-    { name: "General Intelligence", score: 40, max: 50 },
-    { name: "English Language", score: 35, max: 50 },
-    { name: "General Awareness", score: 22.5, max: 50 }
-  ]
-};
+import { db } from "@/lib/firebase/config";
+import { doc, getDoc } from "firebase/firestore";
 
 const COLORS = ['#10b981', '#ef4444', '#64748b']; // Correct, Incorrect, Skipped
 
@@ -38,12 +23,36 @@ export default function ResultsPage() {
   const params = useParams();
   const router = useRouter();
   const [downloading, setDownloading] = useState(false);
+  const [result, setResult] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  const pieData = [
-    { name: 'Correct', value: mockResult.correct },
-    { name: 'Incorrect', value: mockResult.incorrect },
-    { name: 'Skipped', value: mockResult.skipped }
-  ];
+  useEffect(() => {
+    async function loadResult() {
+      try {
+        const attemptId = Array.isArray(params?.attemptId) ? params.attemptId[0] : params?.attemptId;
+        if (!attemptId) return;
+        
+        const docRef = doc(db, "results", attemptId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setResult(docSnap.data());
+        } else {
+          console.log("No such result!");
+        }
+      } catch (err) {
+        console.error("Error fetching result:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadResult();
+  }, [params]);
+
+  const pieData = result ? [
+    { name: 'Correct', value: result.correctAnswers || 0 },
+    { name: 'Incorrect', value: result.incorrectAnswers || 0 },
+    { name: 'Skipped', value: result.skippedAnswers || 0 }
+  ] : [];
 
   const exportPDF = async () => {
     setDownloading(true);
@@ -63,6 +72,14 @@ export default function ResultsPage() {
     }
     setDownloading(false);
   };
+
+  if (loading) {
+    return <div className="p-10 text-center animate-pulse">Loading Result Data...</div>;
+  }
+
+  if (!result) {
+    return <div className="p-10 text-center text-red-500">Result not found or invalid attempt ID.</div>;
+  }
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto" id="results-dashboard">
@@ -87,7 +104,7 @@ export default function ResultsPage() {
           <Trophy className="w-8 h-8 text-primary-500 mx-auto mb-2" />
           <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Total Score</h3>
           <p className="font-display text-3xl font-bold mt-1 text-primary-500">
-            {mockResult.score} <span className="text-lg text-muted-foreground">/ {mockResult.totalMarks}</span>
+            {result.score} <span className="text-lg text-muted-foreground">/ {result.totalMarks}</span>
           </p>
         </motion.div>
 
@@ -95,72 +112,59 @@ export default function ResultsPage() {
           <Target className="w-8 h-8 text-blue-500 mx-auto mb-2" />
           <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Accuracy</h3>
           <p className="font-display text-3xl font-bold mt-1">
-            {Math.round((mockResult.correct / (mockResult.correct + mockResult.incorrect)) * 100)}%
+            {Math.round((result.correctAnswers / (result.correctAnswers + result.incorrectAnswers)) * 100) || 0}%
           </p>
         </motion.div>
 
         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.3 }} className="card text-center py-6">
           <Clock className="w-8 h-8 text-orange-500 mx-auto mb-2" />
           <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Time Taken</h3>
-          <p className="font-display text-3xl font-bold mt-1">{mockResult.timeTaken}</p>
+          <p className="font-display text-3xl font-bold mt-1">{Math.floor(result.timeTaken / 60)}m {result.timeTaken % 60}s</p>
         </motion.div>
 
         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.4 }} className="card text-center py-6">
-          <Trophy className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
+          <Trophy className="w-8 h-8 text-purple-500 mx-auto mb-2" />
           <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Est. Rank</h3>
           <p className="font-display text-3xl font-bold mt-1">
-            #{mockResult.rank} <span className="text-lg text-muted-foreground">/ {mockResult.totalCandidates}</span>
+            #{result.rank || "N/A"} <span className="text-lg text-muted-foreground">/ {result.totalCandidates || "N/A"}</span>
           </p>
         </motion.div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Question Distribution Pie Chart */}
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="card lg:col-span-1">
-          <h3 className="font-bold text-lg mb-4">Question Distribution</h3>
-          <div className="h-[250px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Performance Pie Chart */}
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5 }} className="card">
+          <h3 className="font-bold text-lg mb-4">Question Breakdown</h3>
+          <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
+                <Pie data={pieData} innerRadius={80} outerRadius={110} paddingAngle={5} dataKey="value">
                   {pieData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <RechartsTooltip 
-                  contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }}
-                />
+                <RechartsTooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
           <div className="flex justify-center gap-4 mt-4 text-sm">
-            <div className="flex items-center gap-1"><CheckCircle className="w-4 h-4 text-emerald-500" /> {mockResult.correct}</div>
-            <div className="flex items-center gap-1"><XCircle className="w-4 h-4 text-red-500" /> {mockResult.incorrect}</div>
-            <div className="flex items-center gap-1"><AlertCircle className="w-4 h-4 text-slate-500" /> {mockResult.skipped}</div>
+            <div className="flex items-center gap-1"><CheckCircle className="w-4 h-4 text-emerald-500" /> {result.correctAnswers}</div>
+            <div className="flex items-center gap-1"><XCircle className="w-4 h-4 text-red-500" /> {result.incorrectAnswers}</div>
+            <div className="flex items-center gap-1"><AlertCircle className="w-4 h-4 text-slate-500" /> {result.skippedAnswers}</div>
           </div>
         </motion.div>
 
-        {/* Sectional Analysis Bar Chart */}
-        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }} className="card lg:col-span-2">
+        {/* Sectional Analysis */}
+        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6 }} className="card">
           <h3 className="font-bold text-lg mb-4">Sectional Analysis</h3>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={mockResult.topicAnalysis} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+              <BarChart data={result.topicAnalysis || []} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
                 <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} />
                 <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                <RechartsTooltip 
-                  cursor={{ fill: 'hsl(var(--muted))' }}
-                  contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }}
-                />
-                <Bar dataKey="score" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                <RechartsTooltip cursor={{ fill: 'hsl(var(--muted))' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                <Bar dataKey="score" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} maxBarSize={40} />
               </BarChart>
             </ResponsiveContainer>
           </div>
