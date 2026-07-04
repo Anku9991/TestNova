@@ -35,7 +35,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
-      if (!firebaseUser) {
+      if (firebaseUser) {
+        // Set cookie for middleware
+        document.cookie = `TestNova_session=true; path=/; max-age=31536000; SameSite=Lax`;
+      } else {
+        // Clear cookie for middleware
+        document.cookie = `TestNova_session=; path=/; max-age=0; SameSite=Lax`;
         setUserProfile(null);
         setLoading(false);
       }
