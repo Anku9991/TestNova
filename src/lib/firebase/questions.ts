@@ -5,7 +5,7 @@ import { Question } from "@/types";
 const COLLECTION = "questions";
 
 export const getQuestions = async (filters?: { topicId?: string; difficulty?: string; type?: string }): Promise<Question[]> => {
-  let q = query(collection(db, COLLECTION), orderBy("createdAt", "desc"));
+  const q = query(collection(db, COLLECTION), orderBy("createdAt", "desc"));
   
   // Note: Firestore requires composite indexes for multiple where clauses + orderBy.
   // We'll fetch all ordered by createdAt and filter client-side for simplicity in this demo,

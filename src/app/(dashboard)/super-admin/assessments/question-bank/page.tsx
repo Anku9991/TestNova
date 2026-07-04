@@ -33,6 +33,7 @@ export default function QuestionBankPage() {
 
   useEffect(() => {
     fetchQuestions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedType, selectedDifficulty]);
 
   const handleDelete = async (id: string) => {

@@ -31,6 +31,7 @@ export default function ExamsPage() {
 
   useEffect(() => {
     fetchExams();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategory]);
 
   const handleDelete = async (id: string) => {
