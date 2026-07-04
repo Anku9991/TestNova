@@ -32,12 +32,16 @@ export default function SubscriptionPage() {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const q = query(collection(db, "plans"), where("isActive", "==", true), orderBy("price", "asc"));
+        const q = query(collection(db, "plans"), where("isActive", "==", true));
         const snapshot = await getDocs(q);
         const fetchedPlans: Plan[] = [];
         snapshot.forEach((doc) => {
           fetchedPlans.push({ id: doc.id, ...doc.data() } as Plan);
         });
+        
+        // Sort by price ascending in memory
+        fetchedPlans.sort((a, b) => a.price - b.price);
+        
         setPlans(fetchedPlans);
       } catch (error) {
         console.error("Error fetching plans:", error);
