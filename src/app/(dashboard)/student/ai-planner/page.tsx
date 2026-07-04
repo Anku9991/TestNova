@@ -6,6 +6,9 @@ import { Sparkles, BrainCircuit, Target, CheckCircle, TrendingUp, AlertTriangle,
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
+import { db } from "@/lib/firebase/config";
+import { collection, query, where, orderBy, limit, getDocs } from "firebase/firestore";
+
 interface AIAnalysis {
   overallAssessment: string;
   strengths: string[];
@@ -13,22 +16,6 @@ interface AIAnalysis {
   studyPlan: { day: string; focus: string; action: string }[];
   tips: string[];
 }
-
-// Mock results data for demonstration purposes
-const MOCK_RESULTS_DATA = {
-  score: 142.5,
-  totalMarks: 200,
-  percentage: 71.25,
-  correct: 75,
-  incorrect: 15,
-  skipped: 10,
-  topicAnalysis: [
-    { name: "Quantitative Aptitude", score: 45, max: 50 },
-    { name: "General Intelligence", score: 40, max: 50 },
-    { name: "English Language", score: 35, max: 50 },
-    { name: "General Awareness", score: 22.5, max: 50 }
-  ]
-};
 
 export default function AIPlannerPage() {
   const { user } = useAuth();
@@ -39,6 +26,24 @@ export default function AIPlannerPage() {
     if (!user) return;
     setLoading(true);
     try {
+      // 1. Fetch user's latest result
+      const q = query(
+        collection(db, "results"),
+        where("userId", "==", user.uid),
+        orderBy("createdAt", "desc"),
+        limit(1)
+      );
+      const snapshot = await getDocs(q);
+      
+      if (snapshot.empty) {
+        toast.error("You need to take at least one exam before generating a study plan!");
+        setLoading(false);
+        return;
+      }
+      
+      const latestResult = snapshot.docs[0].data();
+
+      // 2. Send real data to AI
       const token = await user.getIdToken();
       const res = await fetch("/api/ai/analyze", {
         method: "POST",
@@ -46,7 +51,7 @@ export default function AIPlannerPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({ resultsData: MOCK_RESULTS_DATA })
+        body: JSON.stringify({ resultsData: latestResult })
       });
 
       const data = await res.json();

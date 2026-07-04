@@ -22,6 +22,7 @@ interface Question {
   options: Option[];
   marks: number;
   negativeMarks: number;
+  correctAnswer?: string;
 }
 type QuestionStatus = "unvisited" | "visited" | "answered" | "marked" | "answered_marked";
 
@@ -50,7 +51,7 @@ interface CBTEngineProps {
 }
 
 export function CBTEngine({ examId, totalDurationMinutes = 60 }: CBTEngineProps) {
-  const [questions, setQuestions] = useState<any[]>([]);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [examDoc, setExamDoc] = useState<any>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [responses, setResponses] = useState<Record<string, string>>({});
