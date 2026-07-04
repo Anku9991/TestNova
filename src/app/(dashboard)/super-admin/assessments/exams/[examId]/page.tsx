@@ -78,10 +78,10 @@ export default function ExamFormPage({ params }: { params: Promise<{ examId: str
       if (data.endDate) submitData.endDate = new Date(data.endDate);
 
       if (isNew) {
-        await createExam(submitData);
+        await createExam(submitData as any);
         toast.success("Exam created successfully");
       } else {
-        await updateExam(examId, submitData);
+        await updateExam(examId, submitData as any);
         toast.success("Exam updated successfully");
       }
       router.push("/super-admin/assessments/exams");
