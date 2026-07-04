@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MessageSquare, Search, Loader2, Send, CheckCircle, Clock } from "lucide-react";
+import { MessageSquare, Search, Loader2, Send, CheckCircle } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { db } from "@/lib/firebase/config";
 import { 
@@ -14,7 +14,7 @@ import {
 import { toast } from "sonner";
 import type { SupportTicket, TicketMessage } from "@/types";
 
-export default function AdminSupportPage() {
+export default function SuperAdminSupportPage() {
   const { userProfile } = useAuth();
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [loading, setLoading] = useState(true);
@@ -106,7 +106,7 @@ export default function AdminSupportPage() {
         <div>
           <h1 className="font-display text-2xl md:text-3xl font-bold flex items-center gap-2">
             <MessageSquare className="w-8 h-8 text-primary-500" />
-            Support Helpdesk
+            Support Helpdesk (Admin)
           </h1>
           <p className="text-muted-foreground mt-1">Manage and respond to student queries.</p>
         </div>

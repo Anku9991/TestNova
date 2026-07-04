@@ -15,7 +15,7 @@ export default function TopicFormPage({ params }: { params: Promise<{ topicId: s
   const router = useRouter();
   const { topicId } = use(params);
   const isNew = topicId === "new";
-  
+
   const [isLoading, setIsLoading] = useState(!isNew);
   const [isSaving, setIsSaving] = useState(false);
   const [chapters, setChapters] = useState<Chapter[]>([]);

@@ -39,7 +39,7 @@ const adminNav = [
     { icon: Users, label: "Users", href: "/super-admin/users/students" },
     { icon: BookOpen, label: "Exams", href: "/super-admin/assessments/exams" },
     { icon: Database, label: "Question Bank", href: "/super-admin/assessments/question-bank" },
-    { icon: MessageSquare, label: "Support", href: "/admin/support" },
+    { icon: MessageSquare, label: "Support", href: "/super-admin/system/support" },
   ]},
   { group: "Analytics", items: [
     { icon: BarChart3, label: "Reports", href: "/super-admin/revenue" },
@@ -88,6 +88,7 @@ const superAdminNav = [
   {
     group: "System",
     items: [
+      { icon: MessageSquare, label: "Support Tickets", href: "/super-admin/system/support" },
       { icon: HardDrive, label: "Audit Logs", href: "/super-admin/system/audit-logs" },
       { icon: Settings, label: "Settings", href: "/super-admin/system/settings" },
     ]
