@@ -24,9 +24,6 @@ export function useExams(filters?: { isPublished?: boolean; isFree?: boolean; ca
       constraints.push(where("category", "==", filters.category));
     }
     
-    // Sort by creation date descending
-    constraints.push(orderBy("createdAt", "desc"));
-
     if (filters?.limit) {
       constraints.push(limit(filters.limit));
     }
@@ -44,6 +41,10 @@ export function useExams(filters?: { isPublished?: boolean; isFree?: boolean; ca
           startDate: doc.data().startDate?.toDate(),
           endDate: doc.data().endDate?.toDate(),
         })) as Exam[];
+        
+        // Sort by creation date descending in memory to avoid composite index
+        examsData.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+        
         setExams(examsData);
         setLoading(false);
       },

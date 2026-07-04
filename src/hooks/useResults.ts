@@ -18,8 +18,6 @@ export function useResults(userId?: string, limitCount?: number) {
     const constraints: QueryConstraint[] = [];
 
     constraints.push(where("userId", "==", userId));
-    constraints.push(orderBy("createdAt", "desc"));
-
     if (limitCount) {
       constraints.push(limit(limitCount));
     }
@@ -34,6 +32,9 @@ export function useResults(userId?: string, limitCount?: number) {
           ...doc.data(),
           createdAt: doc.data().createdAt?.toDate() || new Date(),
         })) as Result[];
+        
+        resultsData.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+        
         setResults(resultsData);
         setLoading(false);
       },

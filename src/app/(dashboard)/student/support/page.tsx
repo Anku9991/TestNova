@@ -36,12 +36,15 @@ export default function StudentSupportPage() {
     try {
       const q = query(
         collection(db, "support_tickets"), 
-        where("userId", "==", userProfile.uid),
-        orderBy("updatedAt", "desc")
+        where("userId", "==", userProfile.uid)
       );
       const snapshot = await getDocs(q);
       const fetched: SupportTicket[] = [];
       snapshot.forEach(doc => fetched.push({ id: doc.id, ...doc.data() } as SupportTicket));
+      
+      // Sort in memory to avoid composite index
+      fetched.sort((a, b) => b.updatedAt.toMillis() - a.updatedAt.toMillis());
+      
       setTickets(fetched);
     } catch (error) {
       console.error(error);

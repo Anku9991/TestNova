@@ -13,7 +13,8 @@ service cloud.firestore {
     }
 
     function getUserRole() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+      let userDoc = get(/databases/$(database)/documents/users/$(request.auth.uid));
+      return userDoc != null ? userDoc.data.role : 'student';
     }
 
     function isSuperAdmin() {
@@ -21,7 +22,7 @@ service cloud.firestore {
     }
 
     function isAdmin() {
-      return isAuthenticated() && getUserRole() in ['admin', 'super_admin'];
+      return isAuthenticated() && (getUserRole() == 'admin' || getUserRole() == 'super_admin');
     }
 
     function isTeacher() {
@@ -33,9 +34,8 @@ service cloud.firestore {
     }
 
     function isActiveUser() {
-      return isAuthenticated() &&
-             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isActive == true;
+      let userDoc = get(/databases/$(database)/documents/users/$(request.auth.uid));
+      return isAuthenticated() && userDoc != null && userDoc.data.isActive == true;
     }
 
     // ── Users collection ────────────────────────────────────────────
@@ -132,7 +132,7 @@ service cloud.firestore {
     }
 
     // ── Support tickets ───────────────────────────────────────────────
-    match /supportTickets/{ticketId} {
+    match /support_tickets/{ticketId} {
       allow read: if isAuthenticated() && (
         resource.data.userId == request.auth.uid || isAdmin()
       );
