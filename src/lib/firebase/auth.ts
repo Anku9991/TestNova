@@ -1,7 +1,8 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   GoogleAuthProvider,
   signOut,
   sendPasswordResetEmail,
@@ -24,6 +25,35 @@ function requireDb() {
   return db;
 }
 
+export async function createUserDocument(user: User, additionalData?: any) {
+  const userRef = doc(requireDb(), "users", user.uid);
+  const snapshot = await getDoc(userRef);
+
+  if (!snapshot.exists()) {
+    const { displayName, email, photoURL } = user;
+    try {
+      await setDoc(userRef, {
+        displayName,
+        email,
+        photoURL,
+        isActive: true,
+        role: "student",
+        createdAt: serverTimestamp(),
+        ...additionalData,
+      });
+    } catch (error) {
+      console.error("Error creating user document", error);
+    }
+  }
+  return getUserDocument(user.uid);
+}
+
+export async function getUserDocument(uid: string) {
+  if (!uid) return null;
+  const userDoc = await getDoc(doc(requireDb(), "users", uid));
+  return userDoc.data();
+}
+
 export async function registerWithEmail(
   email: string,
   password: string,
@@ -42,12 +72,19 @@ export async function loginWithEmail(email: string, password: string) {
 }
 
 export async function loginWithGoogle() {
-  const credential = await signInWithPopup(requireAuth(), googleProvider);
-  const userDoc = await getDoc(doc(requireDb(), "users", credential.user.uid));
-  if (!userDoc.exists()) {
-    await createUserDocument(credential.user, { role: "student" });
+  await signInWithRedirect(requireAuth(), googleProvider);
+}
+
+export async function handleGoogleRedirect() {
+  const credential = await getRedirectResult(requireAuth());
+  if (credential) {
+    const userDoc = await getDoc(doc(requireDb(), "users", credential.user.uid));
+    if (!userDoc.exists()) {
+      await createUserDocument(credential.user, { role: "student" });
+    }
+    return credential.user;
   }
-  return credential.user;
+  return null;
 }
 
 export async function logout() {

@@ -27,6 +27,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!auth) return; // Firebase not initialized (missing env vars)
+    
+    // Process redirect result if coming back from Google login
+    import("@/lib/firebase/auth").then(({ handleGoogleRedirect }) => {
+      handleGoogleRedirect().catch(console.error);
+    });
+
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
       if (!firebaseUser) {
