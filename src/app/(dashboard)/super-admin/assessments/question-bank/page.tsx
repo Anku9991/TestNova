@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import { Question } from "@/types";
 import { getQuestions, deleteQuestion } from "@/lib/firebase/questions";
 import { DataTable } from "@/components/ui/data-table";
-import { Plus, Edit2, Trash2, Filter } from "lucide-react";
+import { Plus, Edit2, Trash2, Filter, Upload } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
+import { ImportQuestionsModal } from "@/components/admin/import-questions-modal";
 
 export default function QuestionBankPage() {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -14,6 +15,7 @@ export default function QuestionBankPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedType, setSelectedType] = useState<string>("all");
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("all");
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   const fetchQuestions = async () => {
     try {
@@ -116,13 +118,22 @@ export default function QuestionBankPage() {
           <h1 className="text-2xl font-bold font-display">Question Bank</h1>
           <p className="text-muted-foreground">Manage all questions for exams and practice tests.</p>
         </div>
-        <Link
-          href="/super-admin/assessments/question-bank/new"
-          className="btn-primary flex items-center gap-2 whitespace-nowrap"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add Question</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsImportModalOpen(true)}
+            className="btn-secondary flex items-center gap-2 whitespace-nowrap py-2.5 px-4 text-sm"
+          >
+            <Upload className="w-4 h-4" />
+            <span>Import from File</span>
+          </button>
+          <Link
+            href="/super-admin/assessments/question-bank/new"
+            className="btn-primary flex items-center gap-2 whitespace-nowrap py-2.5 px-4 text-sm"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Question</span>
+          </Link>
+        </div>
       </div>
 
       <DataTable
@@ -163,6 +174,12 @@ export default function QuestionBankPage() {
             </div>
           </div>
         }
+      />
+
+      <ImportQuestionsModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onSuccess={fetchQuestions}
       />
     </div>
   );
