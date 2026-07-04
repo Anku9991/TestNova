@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { HardDrive, Search, Loader2, Filter, AlertCircle, CheckCircle, Edit, Trash2, Shield } from "lucide-react";
 import { db } from "@/lib/firebase/config";
 import { collection, query, orderBy, onSnapshot, limit } from "firebase/firestore";
+import { RoleGuard } from "@/components/auth/role-guard";
 
 interface AuditLog {
   id: string;
@@ -55,7 +56,8 @@ export default function AuditLogsPage() {
   });
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <RoleGuard allowedRoles={["super_admin", "superadmin"]}>
+      <div className="space-y-6 max-w-6xl">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <div className="flex items-center gap-3 mb-1">
           <HardDrive className="w-7 h-7 text-primary-500" />
@@ -130,6 +132,7 @@ export default function AuditLogsPage() {
           </table>
         </div>
       )}
-    </div>
+      </div>
+    </RoleGuard>
   );
 }
