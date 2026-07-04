@@ -33,7 +33,7 @@ export async function POST(request: Request) {
       
       Student Performance:
       Score: ${resultsData.score} / ${resultsData.totalMarks} (${resultsData.percentage}%)
-      Correct: ${resultsData.correct}, Incorrect: ${resultsData.incorrect}, Skipped: ${resultsData.skipped}
+      Correct: ${resultsData.correctAnswers}, Incorrect: ${resultsData.incorrectAnswers}, Skipped: ${resultsData.skippedAnswers}
       Topic Analysis: ${JSON.stringify(resultsData.topicAnalysis)}
       
       Please provide your response in the following structured JSON format only, with no markdown code blocks outside of the JSON structure itself, just pure JSON:

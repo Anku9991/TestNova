@@ -36,7 +36,7 @@ service cloud.firestore {
 
     // ── Users collection ────────────────────────────────────────────
     match /users/{userId} {
-      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      allow read: if isAuthenticated() && (isOwner(userId) || isTeacher());
       allow create: if isAuthenticated() && isOwner(userId);
       allow update: if isAuthenticated() && (
         isOwner(userId) && !('role' in request.resource.data.diff(resource.data).affectedKeys()) ||
@@ -166,6 +166,12 @@ service cloud.firestore {
 
     // ── Plans (public read) ───────────────────────────────────────────
     match /plans/{planId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    // ── Settings (public read, super admin write) ────────────────────
+    match /settings/{docId} {
       allow read: if true;
       allow write: if isSuperAdmin();
     }

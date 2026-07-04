@@ -12,7 +12,7 @@ export function Logo({ className, href = "/", imageClassName }: LogoProps) {
   const content = (
     <>
       <Image
-        src="/logo.png"
+        src="/logo.jpg"
         alt="TestNova Logo"
         width={150}
         height={45}
@@ -20,7 +20,7 @@ export function Logo({ className, href = "/", imageClassName }: LogoProps) {
         priority
       />
       <Image
-        src="/logo-dark.png"
+        src="/logo-dark.jpg"
         alt="TestNova Logo"
         width={150}
         height={45}

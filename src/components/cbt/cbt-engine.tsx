@@ -49,6 +49,7 @@ export function CBTEngine({ examId, totalDurationMinutes = 60 }: CBTEngineProps)
   const [violationEvents, setViolationEvents] = useState<any[]>([]);
   const [examSubmitted, setExamSubmitted] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [createdResultId, setCreatedResultId] = useState<string | null>(null);
   
   // Start Gate states
   const [hasStarted, setHasStarted] = useState(false);
@@ -203,6 +204,8 @@ export function CBTEngine({ examId, totalDurationMinutes = 60 }: CBTEngineProps)
       if (document.fullscreenElement) {
         document.exitFullscreen();
       }
+
+      setCreatedResultId(resultRef.id);
 
       window.location.href = `/student/results/${resultRef.id}`;
     } catch (err) {

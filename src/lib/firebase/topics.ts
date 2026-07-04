@@ -5,9 +5,9 @@ import { Topic } from "@/types";
 const COLLECTION = "topics";
 
 export const getTopics = async (chapterId?: string): Promise<Topic[]> => {
-  let q = query(collection(db, COLLECTION), orderBy("createdAt", "asc"));
+  let q = query(collection(db, COLLECTION), orderBy("createdAt", "desc"));
   if (chapterId) {
-    q = query(collection(db, COLLECTION), where("chapterId", "==", chapterId), orderBy("createdAt", "asc"));
+    q = query(collection(db, COLLECTION), where("chapterId", "==", chapterId), orderBy("createdAt", "desc"));
   }
   const snapshot = await getDocs(q);
   return snapshot.docs.map(doc => {
