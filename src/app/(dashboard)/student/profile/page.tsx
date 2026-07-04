@@ -120,7 +120,7 @@ export default function StudentProfilePage() {
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="card flex flex-col sm:flex-row items-center gap-6">
         <div className="relative group">
           <div className="w-24 h-24 rounded-full overflow-hidden bg-gradient-to-br from-primary-500 to-primary-800 flex items-center justify-center flex-shrink-0">
-            {displayPhoto ? (
+            {displayPhoto && (displayPhoto.startsWith("http") || displayPhoto.startsWith("data:")) ? (
               <img src={displayPhoto} alt="Profile" className="w-full h-full object-cover" />
             ) : (
               <span className="text-white text-3xl font-bold">

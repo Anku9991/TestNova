@@ -138,8 +138,8 @@ export default function StudentsPage() {
                 <motion.tr key={user.uid} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.02 }} className="hover:bg-muted/30 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-primary-800 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-                        {user.photoURL ? <img src={user.photoURL} className="w-8 h-8 rounded-full object-cover" alt="" /> : (user.name?.[0] || "?")}
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-primary-800 flex items-center justify-center text-white text-xs font-bold overflow-hidden">
+                        {user.photoURL && user.photoURL.startsWith("http") ? <img src={user.photoURL} className="w-8 h-8 rounded-full object-cover" alt="" /> : (user.name?.[0] || "?")}
                       </div>
                       <div>
                         <div className="font-medium">{user.name || "—"}</div>
