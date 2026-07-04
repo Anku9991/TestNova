@@ -25,6 +25,8 @@ interface Question {
   marks: number;
   negativeMarks: number;
   correctAnswer?: string;
+  topicId?: string;
+  subjectId?: string;
 }
 type QuestionStatus = "unvisited" | "visited" | "answered" | "marked" | "answered_marked";
 
