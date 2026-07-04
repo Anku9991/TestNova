@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard, BookOpen, BarChart3, Trophy,
   User, Settings, Zap, CreditCard, LogOut, Menu, X,
-  ChevronLeft, ChevronRight, Bookmark, Shield, Users, HelpCircle, BrainCircuit, MessageSquare
+  ChevronLeft, ChevronRight, Bookmark, Shield, Users, HelpCircle, BrainCircuit, MessageSquare,
+  Layers, List, Hash, Database, FileText, Video, Bell, Tag, RefreshCcw, HardDrive
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { logout } from "@/lib/firebase/auth";
@@ -17,33 +18,81 @@ import { getInitials } from "@/lib/utils";
 import { Logo } from "@/components/ui/logo";
 
 const studentNav = [
-  { icon: LayoutDashboard, label: "Dashboard", href: "/student/dashboard" },
-  { icon: BookOpen, label: "My Tests", href: "/student/tests" },
-  { icon: Trophy, label: "Results", href: "/student/results" },
-  { icon: BrainCircuit, label: "AI Planner", href: "/student/ai-planner" },
-  { icon: BarChart3, label: "Performance", href: "/student/performance" },
-  { icon: Bookmark, label: "Bookmarks", href: "/student/bookmarks" },
-  { icon: CreditCard, label: "Subscription", href: "/student/subscription" },
-  { icon: MessageSquare, label: "Support", href: "/student/support" },
-  { icon: User, label: "Profile", href: "/student/profile" },
+  { group: "Dashboard", items: [{ icon: LayoutDashboard, label: "Dashboard", href: "/student/dashboard" }] },
+  { group: "Learning", items: [
+    { icon: BookOpen, label: "My Tests", href: "/student/tests" },
+    { icon: Trophy, label: "Results", href: "/student/results" },
+    { icon: BrainCircuit, label: "AI Planner", href: "/student/ai-planner" },
+    { icon: BarChart3, label: "Performance", href: "/student/performance" },
+    { icon: Bookmark, label: "Bookmarks", href: "/student/bookmarks" },
+  ]},
+  { group: "Account", items: [
+    { icon: CreditCard, label: "Subscription", href: "/student/subscription" },
+    { icon: MessageSquare, label: "Support", href: "/student/support" },
+    { icon: User, label: "Profile", href: "/student/profile" },
+  ]}
 ];
 
 const adminNav = [
-  { icon: LayoutDashboard, label: "Dashboard", href: "/admin/dashboard" },
-  { icon: Users, label: "Users", href: "/admin/users" },
-  { icon: BookOpen, label: "Exams", href: "/admin/exams" },
-  { icon: HelpCircle, label: "Questions", href: "/admin/questions" },
-  { icon: MessageSquare, label: "Support", href: "/admin/support" },
-  { icon: BarChart3, label: "Reports", href: "/admin/reports" },
-  { icon: Settings, label: "Settings", href: "/admin/settings" },
+  { group: "Dashboard", items: [{ icon: LayoutDashboard, label: "Dashboard", href: "/admin/dashboard" }] },
+  { group: "Management", items: [
+    { icon: Users, label: "Users", href: "/admin/users" },
+    { icon: BookOpen, label: "Exams", href: "/admin/exams" },
+    { icon: HelpCircle, label: "Questions", href: "/admin/questions" },
+    { icon: MessageSquare, label: "Support", href: "/admin/support" },
+  ]},
+  { group: "Analytics", items: [
+    { icon: BarChart3, label: "Reports", href: "/admin/reports" },
+    { icon: Settings, label: "Settings", href: "/admin/settings" },
+  ]}
 ];
 
 const superAdminNav = [
-  { icon: LayoutDashboard, label: "Overview", href: "/super-admin/dashboard" },
-  { icon: BarChart3, label: "Revenue", href: "/super-admin/revenue" },
-  { icon: CreditCard, label: "Subscriptions", href: "/super-admin/subscriptions" },
-  { icon: Shield, label: "Audit Logs", href: "/super-admin/audit-logs" },
-  { icon: Settings, label: "Settings", href: "/super-admin/settings" },
+  {
+    group: "Dashboard",
+    items: [
+      { icon: LayoutDashboard, label: "Overview", href: "/super-admin/dashboard" },
+      { icon: BarChart3, label: "Revenue", href: "/super-admin/revenue" },
+    ]
+  },
+  {
+    group: "Users",
+    items: [
+      { icon: Users, label: "Students", href: "/super-admin/users/students" },
+      { icon: Shield, label: "Staff", href: "/super-admin/users/staff" },
+    ]
+  },
+  {
+    group: "Academics",
+    items: [
+      { icon: BookOpen, label: "Courses", href: "/super-admin/academics/courses" },
+      { icon: Layers, label: "Subjects", href: "/super-admin/academics/subjects" },
+      { icon: List, label: "Chapters", href: "/super-admin/academics/chapters" },
+      { icon: Hash, label: "Topics", href: "/super-admin/academics/topics" },
+    ]
+  },
+  {
+    group: "Assessments",
+    items: [
+      { icon: Database, label: "Question Bank", href: "/super-admin/assessments/question-bank" },
+      { icon: FileText, label: "Exams", href: "/super-admin/assessments/exams" },
+      { icon: Trophy, label: "Mock Tests", href: "/super-admin/assessments/mock-tests" },
+    ]
+  },
+  {
+    group: "Monetization",
+    items: [
+      { icon: CreditCard, label: "Subscriptions", href: "/super-admin/monetization/subscriptions" },
+      { icon: Tag, label: "Coupons", href: "/super-admin/monetization/coupons" },
+    ]
+  },
+  {
+    group: "System",
+    items: [
+      { icon: HardDrive, label: "Audit Logs", href: "/super-admin/system/audit-logs" },
+      { icon: Settings, label: "Settings", href: "/super-admin/system/settings" },
+    ]
+  }
 ];
 
 export function DashboardSidebar() {
@@ -54,7 +103,7 @@ export function DashboardSidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const role = userProfile?.role || "student";
-  const navItems =
+  const navGroups =
     role === "super_admin"
       ? superAdminNav
       : role === "admin" || role === "teacher"
@@ -85,23 +134,32 @@ export function DashboardSidebar() {
       </div>
 
       {/* Nav Items */}
-      <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setMobileOpen(false)}
-              title={collapsed ? item.label : undefined}
-              className={`sidebar-link ${isActive ? "active" : ""} ${collapsed ? "justify-center px-3" : ""}`}
-            >
-              <Icon className="w-5 h-5 flex-shrink-0" />
-              {!collapsed && <span>{item.label}</span>}
-            </Link>
-          );
-        })}
+      <nav className="flex-1 p-3 space-y-4 overflow-y-auto custom-scrollbar">
+        {navGroups.map((group, idx) => (
+          <div key={idx} className="space-y-1">
+            {!collapsed && (
+              <h4 className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                {group.group}
+              </h4>
+            )}
+            {group.items.map((item) => {
+              const Icon = item.icon;
+              const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  title={collapsed ? item.label : undefined}
+                  className={`sidebar-link ${isActive ? "active" : ""} ${collapsed ? "justify-center px-3" : ""}`}
+                >
+                  <Icon className="w-5 h-5 flex-shrink-0" />
+                  {!collapsed && <span>{item.label}</span>}
+                </Link>
+              );
+            })}
+          </div>
+        ))}
       </nav>
 
       {/* User & Logout */}
@@ -151,18 +209,13 @@ export function DashboardSidebar() {
 
       {/* Mobile: Topbar trigger */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-4 h-14 bg-card/95 backdrop-blur border-b border-border">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary-600 to-primary-900 flex items-center justify-center">
-            <Zap className="w-4 h-4 text-secondary-400" />
-          </div>
-          <span className="font-display font-bold text-base">TestNova</span>
-        </Link>
+        <Logo imageClassName="h-7" />
         <button onClick={() => setMobileOpen(true)} className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-muted">
           <Menu className="w-5 h-5" />
         </button>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Sidebar Overlay */}
       <AnimatePresence>
         {mobileOpen && (
           <>
@@ -170,18 +223,21 @@ export function DashboardSidebar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="lg:hidden fixed inset-0 bg-black/50 z-40"
               onClick={() => setMobileOpen(false)}
+              className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
             />
             <motion.aside
-              initial={{ x: -280 }}
+              initial={{ x: "-100%" }}
               animate={{ x: 0 }}
-              exit={{ x: -280 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="lg:hidden fixed left-0 top-0 bottom-0 w-72 bg-card border-r border-border z-50"
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+              className="lg:hidden fixed left-0 top-0 bottom-0 w-[280px] bg-card border-r border-border z-50 flex flex-col"
             >
-              <div className="flex justify-end p-3">
-                <button onClick={() => setMobileOpen(false)} className="w-9 h-9 rounded-xl flex items-center justify-center hover:bg-muted">
+              <div className="absolute right-4 top-4 z-50">
+                <button
+                  onClick={() => setMobileOpen(false)}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-muted/50 hover:bg-muted"
+                >
                   <X className="w-5 h-5" />
                 </button>
               </div>

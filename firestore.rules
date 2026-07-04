@@ -59,6 +59,27 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
+    // ── Academics Collections ───────────────────────────────────────
+    match /courses/{courseId} {
+      allow read: if true; // Courses can be viewed by anyone (even unauthenticated for marketing)
+      allow write: if isAdmin();
+    }
+
+    match /subjects/{subjectId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /chapters/{chapterId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /topics/{topicId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // ── Questions collection ─────────────────────────────────────────
     match /questions/{questionId} {
       allow read: if isActiveUser();

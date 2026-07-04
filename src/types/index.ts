@@ -15,6 +15,56 @@ export interface UserProfile {
   targetExam?: string;
 }
 
+export interface Course {
+  id: string;
+  title: string;
+  description: string;
+  thumbnailUrl?: string;
+  price: number;
+  offerPrice?: number;
+  durationInMonths?: number;
+  level: "beginner" | "intermediate" | "advanced";
+  language: string;
+  categoryId?: string;
+  instructorId?: string;
+  tags: string[];
+  isPublished: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Subject {
+  id: string;
+  courseId: string;
+  title: string;
+  description?: string;
+  icon?: string;
+  color?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Chapter {
+  id: string;
+  subjectId: string;
+  title: string;
+  description?: string;
+  sequence: number;
+  isLocked: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Topic {
+  id: string;
+  chapterId: string;
+  title: string;
+  estimatedTime?: number; // minutes
+  difficulty: "easy" | "medium" | "hard";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface Exam {
   id: string;
   title: string;
