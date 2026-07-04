@@ -44,8 +44,8 @@ export default function StudentSupportPage() {
       
       // Sort in memory to avoid composite index
       fetched.sort((a, b) => {
-        const timeA = a.updatedAt?.toMillis ? a.updatedAt.toMillis() : (a.updatedAt as any)?.getTime?.() || 0;
-        const timeB = b.updatedAt?.toMillis ? b.updatedAt.toMillis() : (b.updatedAt as any)?.getTime?.() || 0;
+        const timeA = (a.updatedAt as any)?.toMillis ? (a.updatedAt as any).toMillis() : (a.updatedAt as any)?.getTime?.() || 0;
+        const timeB = (b.updatedAt as any)?.toMillis ? (b.updatedAt as any).toMillis() : (b.updatedAt as any)?.getTime?.() || 0;
         return timeB - timeA;
       });
       
