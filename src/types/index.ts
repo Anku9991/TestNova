@@ -94,6 +94,7 @@ export interface Question {
   id: string;
   examId?: string;
   subjectId?: string;
+  chapterId?: string;
   topicId?: string;
   type: "mcq" | "single" | "multiple" | "true_false" | "paragraph" | "comprehension";
   text: string;
