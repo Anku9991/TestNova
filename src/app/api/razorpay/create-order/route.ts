@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     const options = {
       amount: amountInPaise,
       currency: plan.currency || "INR",
-      receipt: `receipt_${userId}_${Date.now()}`,
+      receipt: `rcp_${userId.slice(0, 8)}_${Date.now().toString().slice(-8)}`,
       notes: {
         userId,
         planId,
