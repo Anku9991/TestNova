@@ -100,15 +100,15 @@ export function Footer() {
         <div className="flex flex-wrap gap-6 pb-8 border-b border-border text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Mail className="w-4 h-4 text-primary-500" />
-            support@TestNova.com
+            info@pihnexa.co.in
           </div>
           <div className="flex items-center gap-2">
             <Phone className="w-4 h-4 text-primary-500" />
-            +91 98765 43210
+            +91 7992203671
           </div>
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 text-primary-500" />
-            New Delhi, India — 110001
+            Lucknow, Uttar Pradesh, India
           </div>
         </div>
 
