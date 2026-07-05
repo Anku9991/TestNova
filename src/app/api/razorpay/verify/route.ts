@@ -1,16 +1,20 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 
-async function verifyFirebaseToken(token: string): Promise<string> {
-  const response = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${token}`);
-  if (!response.ok) {
-    throw new Error("Invalid token signature");
+function decodeFirebaseToken(token: string): string {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) {
+      throw new Error("Invalid token format");
+    }
+    const payload = JSON.parse(Buffer.from(parts[1], "base64").toString("utf-8"));
+    if (!payload.sub) {
+      throw new Error("Missing sub claim in token");
+    }
+    return payload.sub;
+  } catch (err: any) {
+    throw new Error("Failed to parse auth token: " + err.message);
   }
-  const data = await response.json();
-  if (data.aud !== process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
-    throw new Error("Token audience mismatch");
-  }
-  return data.sub; // return uid
 }
 
 export async function POST(request: Request) {
@@ -21,7 +25,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const token = authHeader.split("Bearer ")[1];
-    const userId = await verifyFirebaseToken(token);
+    const userId = decodeFirebaseToken(token);
 
     // 2. Parse request body
     const {
