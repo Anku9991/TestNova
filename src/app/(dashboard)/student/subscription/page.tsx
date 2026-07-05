@@ -106,6 +106,39 @@ export default function SubscriptionPage() {
             const verifyData = await verifyRes.json();
             if (!verifyRes.ok) throw new Error(verifyData.error || "Payment verification failed");
 
+            // 5. Update user subscription in Firestore from client
+            const { doc, setDoc, updateDoc, collection } = await import("firebase/firestore");
+            const subRef = doc(collection(db, "subscriptions"));
+            const startDate = new Date();
+            const expiresAt = new Date();
+            expiresAt.setDate(expiresAt.getDate() + (plan.duration || 30));
+
+            const subscriptionData = {
+              id: subRef.id,
+              userId: user.uid,
+              planId: plan.id,
+              planName: plan.name,
+              status: "active",
+              startDate,
+              expiresAt,
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              amount: plan.price,
+              currency: plan.currency || "INR",
+            };
+
+            await setDoc(subRef, subscriptionData);
+            await updateDoc(doc(db, "users", user.uid), {
+              subscription: {
+                id: subRef.id,
+                planId: plan.id,
+                planName: plan.name,
+                status: "active",
+                expiresAt,
+              },
+              updatedAt: new Date(),
+            });
+
             toast.success("Subscription activated successfully! 🎉");
             // Optional: refresh page to update state
             window.location.reload();

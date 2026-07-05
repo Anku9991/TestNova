@@ -1,6 +1,19 @@
 import { NextResponse } from "next/server";
-import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import { razorpay } from "@/lib/razorpay";
+import { db } from "@/lib/firebase/config";
+import { doc, getDoc } from "firebase/firestore";
+
+async function verifyFirebaseToken(token: string): Promise<string> {
+  const response = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${token}`);
+  if (!response.ok) {
+    throw new Error("Invalid token signature");
+  }
+  const data = await response.json();
+  if (data.aud !== process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
+    throw new Error("Token audience mismatch");
+  }
+  return data.sub; // return uid
+}
 
 export async function POST(request: Request) {
   try {
@@ -10,8 +23,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const token = authHeader.split("Bearer ")[1];
-    const decodedToken = await adminAuth.verifyIdToken(token);
-    const userId = decodedToken.uid;
+    const userId = await verifyFirebaseToken(token);
 
     // 2. Parse request body
     const { planId } = await request.json();
@@ -20,8 +32,11 @@ export async function POST(request: Request) {
     }
 
     // 3. Fetch plan details from Firestore
-    const planDoc = await adminDb.collection("plans").doc(planId).get();
-    if (!planDoc.exists) {
+    if (!db) {
+      return NextResponse.json({ error: "Database not initialized" }, { status: 500 });
+    }
+    const planDoc = await getDoc(doc(db, "plans", planId));
+    if (!planDoc.exists()) {
       return NextResponse.json({ error: "Plan not found" }, { status: 404 });
     }
     const plan = planDoc.data();

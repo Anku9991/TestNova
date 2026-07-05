@@ -1,6 +1,17 @@
 import { NextResponse } from "next/server";
-import { adminAuth, adminDb } from "@/lib/firebase/admin";
 import crypto from "crypto";
+
+async function verifyFirebaseToken(token: string): Promise<string> {
+  const response = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${token}`);
+  if (!response.ok) {
+    throw new Error("Invalid token signature");
+  }
+  const data = await response.json();
+  if (data.aud !== process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
+    throw new Error("Token audience mismatch");
+  }
+  return data.sub; // return uid
+}
 
 export async function POST(request: Request) {
   try {
@@ -10,8 +21,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const token = authHeader.split("Bearer ")[1];
-    const decodedToken = await adminAuth.verifyIdToken(token);
-    const userId = decodedToken.uid;
+    const userId = await verifyFirebaseToken(token);
 
     // 2. Parse request body
     const {
@@ -37,58 +47,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 
-    // 4. Fetch plan details
-    const planDoc = await adminDb.collection("plans").doc(planId).get();
-    if (!planDoc.exists) {
-      return NextResponse.json({ error: "Plan not found" }, { status: 404 });
-    }
-    const plan = planDoc.data()!;
-
-    // 5. Update user subscription in Firestore
-    const startDate = new Date();
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + (plan.duration || 30));
-
-    const subscriptionData = {
-      id: razorpay_subscription_id_fallback(razorpay_payment_id), // Use payment ID as a proxy if it's not a real Razorpay subscription object
-      userId,
-      planId,
-      planName: plan.name,
-      status: "active",
-      startDate,
-      expiresAt,
-      razorpayOrderId: razorpay_order_id,
-      razorpayPaymentId: razorpay_payment_id,
-      amount: plan.price,
-      currency: plan.currency || "INR",
-    };
-
-    // Save subscription document
-    const subRef = adminDb.collection("subscriptions").doc();
-    await subRef.set({ ...subscriptionData, id: subRef.id });
-
-    // Update user profile with active subscription
-    await adminDb.collection("users").doc(userId).update({
-      subscription: {
-        id: subRef.id,
-        planId,
-        planName: plan.name,
-        status: "active",
-        expiresAt,
-      },
-      updatedAt: new Date(),
-    });
-
-    return NextResponse.json({ success: true });
+    // Return success to client for client-side firestore updates
+    return NextResponse.json({ success: true, userId });
   } catch (error: any) {
-    console.error("Error verifying payment:", error);
+    console.error("Error verifying payment signature:", error);
     return NextResponse.json(
       { error: "Payment verification failed", details: error.message },
       { status: 500 }
     );
   }
-}
-
-function razorpay_subscription_id_fallback(paymentId: string) {
-  return `sub_${paymentId}`;
 }
