@@ -8,7 +8,7 @@ export default function TermsPage() {
 
       <div className="prose prose-invert max-w-none text-muted-foreground space-y-6">
         <p>
-          Welcome to <strong>TestNova</strong>! These terms and conditions outline the rules and regulations for the use of TestNova's CBT Portal, operated by <strong>PihNexa Technologies</strong>.
+          Welcome to <strong>TestNova</strong>! These terms and conditions outline the rules and regulations for the use of TestNova&apos;s CBT Portal, operated by <strong>PihNexa Technologies</strong>.
         </p>
         <p>
           By accessing this website, we assume you accept these terms and conditions. Do not continue to use TestNova if you do not agree to take all of the terms and conditions stated on this page.

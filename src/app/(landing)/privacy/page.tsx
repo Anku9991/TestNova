@@ -42,7 +42,7 @@ export default function PrivacyPage() {
           TestNova follows a standard procedure of using log files. These files log visitors when they visit websites. The information collected by log files includes internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and number of clicks. These are not linked to any information that is personally identifiable.
         </p>
         <p>
-          We also use cookies to store information including visitors' preferences, and the pages on the website that the visitor accessed or visited, to optimize the user experience.
+          We also use cookies to store information including visitors&apos; preferences, and the pages on the website that the visitor accessed or visited, to optimize the user experience.
         </p>
 
         <h2 className="text-2xl font-bold text-white mt-8 mb-4">4. Data Sharing and Security</h2>
