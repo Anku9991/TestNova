@@ -15,6 +15,17 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       </div>
       <div className="relative z-10 w-full max-w-md">
         {children}
+        <div className="text-center mt-6 text-xs text-white/40">
+          Powered by{" "}
+          <a
+            href="https://pihnexa.co.in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary-400 hover:text-primary-300 transition-colors font-medium"
+          >
+            PihNexa Technologies
+          </a>
+        </div>
       </div>
     </div>
   );

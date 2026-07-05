@@ -114,7 +114,17 @@ export function Footer() {
 
         {/* Bottom row */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} TestNova. All rights reserved. Built with ❤️ in India.</p>
+          <p>
+            © {new Date().getFullYear()} TestNova. All rights reserved. Powered by{" "}
+            <a
+              href="https://pihnexa.co.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary-500 hover:underline transition-colors font-medium"
+            >
+              PihNexa Technologies
+            </a>.
+          </p>
           <p>
             Made for aspirants who dare to dream of serving the nation.
           </p>
